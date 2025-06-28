@@ -10,4 +10,5 @@ class JobhunterApplicationTests {
 	void contextLoads() {
 	}
 
+	
 }
