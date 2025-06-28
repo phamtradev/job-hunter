@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minidev:accessors-smart:2.5.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.minidev" artifactId="accessors-smart" version="2.5.0" baseVersion="2.5.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minidev/accessors-smart/2.5.0/aca011492dfe9c26f4e0659028a4fe0970829dd8/accessors-smart-2.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minidev/accessors-smart/2.5.0/5515719681fb7ebed30b2f0b038b845ff4ae34ae/accessors-smart-2.5.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minidev/accessors-smart/2.5.0/596cf1b2ac57a905102db8fb648c4080529f347f/accessors-smart-2.5.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/job-hunter.iml" filepath="$PROJECT_DIR$/.idea/job-hunter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jobhunter.iml" filepath="$PROJECT_DIR$/.idea/modules/jobhunter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jobhunter.main.iml" filepath="$PROJECT_DIR$/.idea/modules/jobhunter.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jobhunter.test.iml" filepath="$PROJECT_DIR$/.idea/modules/jobhunter.test.iml" />
     </modules>
   </component>
 </project>

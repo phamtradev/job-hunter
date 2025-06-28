@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.fasterxml:classmate:1.6.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.fasterxml" artifactId="classmate" version="1.6.0" baseVersion="1.6.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.6.0/91affab6f84a2182fce5dd72a8d01bc14346dddd/classmate-1.6.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.6.0/8b786dc6144acc0d2a4369094e386dec2dc8f384/classmate-1.6.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.6.0/799a7d0e6ad3de8580302886c1dc72f83baa3a10/classmate-1.6.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
