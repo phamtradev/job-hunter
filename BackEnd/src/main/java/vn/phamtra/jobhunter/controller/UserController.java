@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.service.UserService;
+import vn.phamtra.jobhunter.service.error.IdInvalidException;
 
 
 @RestController
@@ -41,7 +42,10 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
+        if (id >= 1500) {
+            throw new IdInvalidException("Id không lớn hơn 1500");
+        }
         this.userService.handleDeleteUser(id);
         return ResponseEntity.status(HttpStatus.OK).body("user");
     }
