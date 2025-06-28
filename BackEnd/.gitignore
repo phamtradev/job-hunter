@@ -1,0 +1,10 @@
+.gradle/
+*.log
+
+# Ignore IDE-specific files
+# IntelliJ IDEA
+.idea/
+*.iml
+build/
+bin
+gradle
