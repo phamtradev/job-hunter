@@ -18,15 +18,14 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalException {
     @ExceptionHandler(value = {
-            IdInvalidException.class,
             UsernameNotFoundException.class,
             BadCredentialsException.class
     })
-    public ResponseEntity<RestRespone<Object>> handleIdException(IdInvalidException idInvalidException) {
+    public ResponseEntity<RestRespone<Object>> handleIdException(Exception ex) {
         RestRespone<Object> res = new RestRespone<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(idInvalidException.getMessage());
-        res.setMessage("IdInvalidException");
+        res.setError(ex.getMessage());
+        res.setMessage("Exception occurs......");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
