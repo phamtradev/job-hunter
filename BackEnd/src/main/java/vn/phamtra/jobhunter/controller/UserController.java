@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.service.UserService;
-import vn.phamtra.jobhunter.service.error.IdInvalidException;
+import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser());
     }
 
-   @PostMapping("/users")
+    @PostMapping("/users")
     public ResponseEntity<User> createNewUser(@RequestBody User postManUser) {
         String hashPassword = this.passwordEncoder.encode(postManUser.getPassword()); //mã hóa password
         postManUser.setPassword(hashPassword);
