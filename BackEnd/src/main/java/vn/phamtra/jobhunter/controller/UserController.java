@@ -2,6 +2,7 @@ package vn.phamtra.jobhunter.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.service.UserService;
@@ -12,11 +13,13 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    //test
-    private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/users/{id}")
@@ -32,6 +35,8 @@ public class UserController {
 
    @PostMapping("/users")
     public ResponseEntity<User> createNewUser(@RequestBody User postManUser) {
+        String hashPassword = this.passwordEncoder.encode(postManUser.getPassword()); //mã hóa password
+        postManUser.setPassword(hashPassword);
         User phamtraUser = this.userService.handleCreateUser(postManUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(phamtraUser);
