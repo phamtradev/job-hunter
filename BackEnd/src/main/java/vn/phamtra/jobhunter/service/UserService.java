@@ -2,6 +2,7 @@ package vn.phamtra.jobhunter.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.dto.Meta;
@@ -35,22 +36,22 @@ public class UserService {
         return null;
     }
 
-    public ResultPaginationDTO fetchAllUser(Pageable pageable) {
-        Page<User> pageUser = this.userRepository.findAll(pageable);//convert sang kiểu dữ liệu List và truyền pageable vào để phân trang
+    public ResultPaginationDTO fetchAllUser(Specification<User> pageable) {
+        List<User> pageUser = this.userRepository.findAll(pageable);//convert sang kiểu dữ liệu List và truyền pageable vào để phân trang
 
         //khai báo ResultPaginationDTO và Meta để tiến hành set hiển thị các trang
         ResultPaginationDTO rs = new ResultPaginationDTO();
         Meta mt = new Meta();
 
         //set các hiển thị
-        mt.setPage(pageUser.getNumber() + 1); //số trang (do trang tính từ trang 0 nên + 1)
-        mt.setPageSize(pageUser.getSize()); //số phần tử
-
-        mt.setPages(pageUser.getTotalPages()); //tổng số trang
-        mt.setTotal(pageUser.getTotalElements()); //tổng số phần tử
-
+//        mt.setPage(pageUser.getNumber() + 1); //số trang (do trang tính từ trang 0 nên + 1)
+//        mt.setPageSize(pageUser.getSize()); //số phần tử
+//
+//        mt.setPages(pageUser.getTotalPages()); //tổng số trang
+//        mt.setTotal(pageUser.getTotalElements()); //tổng số phần tử
+//
         rs.setMeta(mt);
-        rs.setResult(pageUser.getContent());
+        rs.setResult(pageUser);
 
         return rs; //dạng convert dạng List thì return kiểu này
     }
