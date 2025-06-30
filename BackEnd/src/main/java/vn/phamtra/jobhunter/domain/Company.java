@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import vn.phamtra.jobhunter.service.CompanyService;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.time.Instant;

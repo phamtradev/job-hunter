@@ -4,10 +4,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.Company;
+import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.service.CompanyService;
+import vn.phamtra.jobhunter.util.error.IdInvalidException;
+
+import java.util.List;
 
 @Controller
 public class CompanyController {
@@ -23,5 +26,23 @@ public class CompanyController {
     public ResponseEntity<Company> createNewCompany(@Valid @RequestBody Company reqCompany) {
         Company phamtraCompany = this.companyService.handleCreateCompany(reqCompany);
         return ResponseEntity.status(HttpStatus.CREATED).body(phamtraCompany);
+    }
+
+    @GetMapping("/companies")
+    public ResponseEntity<List<Company>> getAllCompany() {
+        List<Company> companies = this.companyService.fetchAllCompany();
+        return ResponseEntity.ok(companies);
+    }
+
+    @PutMapping("/companies")
+    public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company reqcompany) {
+        Company updatedCompany = this.companyService.handleUpdateCompany(reqcompany);
+        return ResponseEntity.ok().body(updatedCompany);
+    }
+
+    @DeleteMapping("/companies/{id}")
+    public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id) {
+        this.companyService.handleDeleteCompany(id);
+        return ResponseEntity.ok().body(null);
     }
 }

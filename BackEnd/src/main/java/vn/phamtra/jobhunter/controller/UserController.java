@@ -1,16 +1,18 @@
 package vn.phamtra.jobhunter.controller;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.service.CompanyService;
+import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -33,8 +35,19 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser());
+    public ResponseEntity<ResultPaginationDTO> getAllUser(
+            // tạo phân trang
+            @RequestParam("current") Optional<String> currentOptional,
+            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
+        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
+
+        int current = Integer.parseInt(sCurrent);
+        int pageSize = Integer.parseInt(sPageSize);
+
+        Pageable pageable = PageRequest.of(current - 1, pageSize); //tạo pageable để ném qua service để phân trang
+        //
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(pageable));
     }
 
     @PostMapping("/users")
