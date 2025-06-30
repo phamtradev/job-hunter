@@ -1,9 +1,16 @@
 package vn.phamtra.jobhunter.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import vn.phamtra.jobhunter.util.constant.GenderEnum;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -13,36 +20,16 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private int age;
 
-    public long getId() {
-        return id;
-    }
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    private String address;
+    private String refreshToken;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updateBy;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
