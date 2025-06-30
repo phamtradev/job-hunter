@@ -5,8 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.dto.Meta;
-import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.phamtra.jobhunter.domain.dto.*;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
 import java.util.List;
@@ -59,9 +58,10 @@ public class UserService {
     public User handleUpdateUser(User reqUser) {
         User currentUser = this.fetchUserById(reqUser.getId());
         if (currentUser != null) {
-            currentUser.setEmail(reqUser.getEmail());
+            currentUser.setAddress(reqUser.getAddress());
             currentUser.setName(reqUser.getName());
-            currentUser.setPassword(reqUser.getPassword());
+            currentUser.setAge(reqUser.getAge());
+            currentUser.setGender(reqUser.getGender());
 
             //update
             currentUser = this.userRepository.save(currentUser);
@@ -72,4 +72,44 @@ public class UserService {
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByEmail(username);
     }
+
+    public boolean isEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    public ResCreateUserDTO convertToResCreateUserDTO(User user) {
+        ResCreateUserDTO res = new ResCreateUserDTO();
+        res.setId(user.getId());
+        res.setEmail(user.getEmail());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setCreatedAt(user.getCreatedAt());
+        res.setAddress(user.getAddress());
+        return res;
+    }
+
+    public ResUserDTO convertToResUserDTO(User user) {
+        ResUserDTO res = new ResUserDTO();
+        res.setId(user.getId());
+        res.setEmail(user.getEmail());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setUpdatedAt(user.getUpdatedAt());
+        res.setCreateAt(user.getCreatedAt());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+        return res;
+    }
+
+    public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
+        ResUpdateUserDTO res = new ResUpdateUserDTO();
+        res.setId(user.getId());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setUpdateAt(user.getUpdatedAt());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+        return res;
+    }
+
 }

@@ -1,6 +1,7 @@
 package vn.phamtra.jobhunter.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.phamtra.jobhunter.util.constant.GenderEnum;
@@ -18,7 +19,11 @@ public class User {
     private long id;
 
     private String name;
+
+    @NotBlank(message = "email không được để trống")
     private String email;
+
+    @NotBlank(message = "password không được để trống")
     private String password;
     private int age;
 
