@@ -2,6 +2,7 @@ package vn.phamtra.jobhunter.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
@@ -34,10 +35,9 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public ResultPaginationDTO fetchAllCompany(Pageable pageable) {
+    public ResultPaginationDTO fetchAllCompany(Specification<Company> spec, Pageable pageable) {
 
-        Page<Company> pageCompany = this.companyRepository.findAll(pageable);
-
+        Page<Company> pageCompany = this.companyRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         Meta mt = new Meta();
 

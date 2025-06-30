@@ -36,22 +36,22 @@ public class UserService {
         return null;
     }
 
-    public ResultPaginationDTO fetchAllUser(Specification<User> pageable) {
-        List<User> pageUser = this.userRepository.findAll(pageable);//convert sang kiểu dữ liệu List và truyền pageable vào để phân trang
+    public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
+        Page<User> pageUser = this.userRepository.findAll(spec, pageable);//convert sang kiểu dữ liệu List và truyền pageable vào để phân trang
 
         //khai báo ResultPaginationDTO và Meta để tiến hành set hiển thị các trang
         ResultPaginationDTO rs = new ResultPaginationDTO();
         Meta mt = new Meta();
 
         //set các hiển thị
-//        mt.setPage(pageUser.getNumber() + 1); //số trang (do trang tính từ trang 0 nên + 1)
-//        mt.setPageSize(pageUser.getSize()); //số phần tử
-//
-//        mt.setPages(pageUser.getTotalPages()); //tổng số trang
-//        mt.setTotal(pageUser.getTotalElements()); //tổng số phần tử
+        mt.setPage(pageUser.getNumber() + 1); //số trang (do trang tính từ trang 0 nên + 1)
+        mt.setPageSize(pageUser.getSize()); //số phần tử
+
+        mt.setPages(pageUser.getTotalPages()); //tổng số trang
+        mt.setTotal(pageUser.getTotalElements()); //tổng số phần tử
 //
         rs.setMeta(mt);
-        rs.setResult(pageUser);
+        rs.setResult(pageUser.getContent());
 
         return rs; //dạng convert dạng List thì return kiểu này
     }

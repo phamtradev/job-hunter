@@ -38,20 +38,9 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<ResultPaginationDTO> getAllUser(
-            @Filter Specification<User> spec
-            // tạo phân trang
-//            @RequestParam("current") Optional<String> currentOptional,
-//            @RequestParam("pageSize") Optional<String> pageSizeOptional
-    ) {
-//        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
-//        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
-//
-//        int current = Integer.parseInt(sCurrent);
-//        int pageSize = Integer.parseInt(sPageSize);
-//
-//        Pageable pageable = PageRequest.of(current - 1, pageSize); //tạo pageable để ném qua service để phân trang
-        //
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec));
+            @Filter Specification<User> spec, Pageable pageable) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec, pageable));
     }
 
     @PostMapping("/users")
