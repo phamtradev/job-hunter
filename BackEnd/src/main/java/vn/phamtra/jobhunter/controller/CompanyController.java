@@ -13,12 +13,14 @@ import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.phamtra.jobhunter.service.CompanyService;
+import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/api/v1")
 public class CompanyController {
 
 
@@ -35,6 +37,7 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
+    @ApiMessage("fetch companies")
     public ResponseEntity<ResultPaginationDTO> getAllCompany(
             @Filter Specification<Company> spec, Pageable pageable) {
 
