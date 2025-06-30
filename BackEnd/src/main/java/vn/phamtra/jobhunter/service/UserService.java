@@ -43,7 +43,7 @@ public class UserService {
         Meta mt = new Meta();
 
         //set các hiển thị
-        mt.setPage(pageUser.getNumber()); //số trang
+        mt.setPage(pageUser.getNumber() + 1); //số trang (do trang tính từ trang 0 nên + 1)
         mt.setPageSize(pageUser.getSize()); //số phần tử
 
         mt.setPages(pageUser.getTotalPages()); //tổng số trang
