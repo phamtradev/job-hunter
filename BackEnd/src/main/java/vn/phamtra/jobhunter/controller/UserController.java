@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
+import vn.phamtra.jobhunter.service.CompanyService;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
@@ -15,6 +17,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService, PasswordEncoder passwordEncoder) {
@@ -56,4 +60,5 @@ public class UserController {
         this.userService.handleDeleteUser(id);
         return ResponseEntity.status(HttpStatus.OK).body("user");
     }
+
 }
