@@ -1,8 +1,12 @@
 package vn.phamtra.jobhunter.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
+import vn.phamtra.jobhunter.domain.dto.Meta;
+import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.CompanyRepository;
 
 import java.util.List;
@@ -30,8 +34,24 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public List<Company> fetchAllCompany() {
-        return this.companyRepository.findAll();
+    public ResultPaginationDTO fetchAllCompany(Pageable pageable) {
+
+        Page<Company> pageCompany = this.companyRepository.findAll(pageable);
+
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        Meta mt = new Meta();
+
+        //set các hiển thị
+        mt.setPage(pageCompany.getNumber()); //số trang
+        mt.setPageSize(pageCompany.getSize()); //số phần tử
+
+        mt.setPages(pageCompany.getTotalPages()); //tổng số trang
+        mt.setTotal(pageCompany.getTotalElements()); //tổng số phần tử
+
+        rs.setMeta(mt);
+        rs.setResult(pageCompany.getContent());
+
+        return rs;
     }
 
     public Company handleUpdateCompany(Company reqCompany) {

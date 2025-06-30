@@ -1,16 +1,20 @@
 package vn.phamtra.jobhunter.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
+import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.phamtra.jobhunter.service.CompanyService;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CompanyController {
@@ -29,9 +33,20 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<List<Company>> getAllCompany() {
-        List<Company> companies = this.companyService.fetchAllCompany();
-        return ResponseEntity.ok(companies);
+    public ResponseEntity<ResultPaginationDTO> getAllCompany(
+            // tạo phân trang
+            @RequestParam("current") Optional<String> currentOptional,
+            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+
+        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
+        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
+
+        int current = Integer.parseInt(sCurrent);
+        int pageSize = Integer.parseInt(sPageSize);
+
+        Pageable pageable = PageRequest.of(current - 1, pageSize);
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.fetchAllCompany(pageable));
     }
 
     @PutMapping("/companies")
