@@ -9,10 +9,6 @@ public class HelloController {
 
     @GetMapping("/")
     public String getHelloWorld() throws IdInvalidException {
-        if (true) {
-            throw new IdInvalidException("check mate");
-
-        }
-        return "update";
+        return "kkk hello world";
     }
 }

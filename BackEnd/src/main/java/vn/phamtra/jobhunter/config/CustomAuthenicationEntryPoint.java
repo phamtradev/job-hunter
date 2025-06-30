@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import vn.phamtra.jobhunter.domain.RestRespone;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class CustomAuthenicationEntryPoint implements AuthenticationEntryPoint {
@@ -33,7 +34,13 @@ public class CustomAuthenicationEntryPoint implements AuthenticationEntryPoint {
         // Create response body
         RestRespone<Object> res = new RestRespone<>();
         res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        res.setError(authException.getMessage());
+
+        String errorMessage = Optional.ofNullable(authException.getCause())
+                .map(Throwable::getMessage)
+                .orElse(authException.getMessage());
+        res.setError(errorMessage);
+
+
         res.setMessage("Token không hợp lệ (hết hạn, không đúng định dạng)");
 
         // Write JSON response
