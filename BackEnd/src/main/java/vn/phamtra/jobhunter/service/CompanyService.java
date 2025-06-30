@@ -42,8 +42,8 @@ public class CompanyService {
         Meta mt = new Meta();
 
         //set các hiển thị
-        mt.setPage(pageCompany.getNumber() + 1); //số trang
-        mt.setPageSize(pageCompany.getSize()); //số phần tử
+        mt.setPage(pageable.getPageNumber() + 1); //số trang
+        mt.setPageSize(pageable.getPageSize()); //số phần tử
 
         mt.setPages(pageCompany.getTotalPages()); //tổng số trang
         mt.setTotal(pageCompany.getTotalElements()); //tổng số phần tử
