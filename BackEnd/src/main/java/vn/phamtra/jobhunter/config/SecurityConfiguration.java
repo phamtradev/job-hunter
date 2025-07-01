@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults()) //cấu hình mặc định lỗi cors
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/api/v1/login").permitAll()
+                                .requestMatchers("/", "/api/v1/auth/login").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenicationEntryPoint)
@@ -67,7 +67,7 @@ public class SecurityConfiguration {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // mặc định
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("phamtra"); // depends on your JWT
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("user"); // depends on your JWT
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

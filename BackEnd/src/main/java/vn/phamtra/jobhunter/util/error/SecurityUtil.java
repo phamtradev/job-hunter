@@ -34,7 +34,7 @@ public class SecurityUtil {
     @Value("${phamtra.jwt.refresh-token-validity-in-seconds}") // thời gian hết hạn
     private long refreshTokenExpiration;
 
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin dto) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS); // tính thời gian hết hạn
 
@@ -43,7 +43,7 @@ public class SecurityUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
-                .claim("phamtra", authentication)
+                .claim("user", dto)
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
