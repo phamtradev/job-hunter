@@ -1,6 +1,9 @@
 package vn.phamtra.jobhunter.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,6 +29,9 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
+
+    @Value("${phamtra.jwt.refresh-token-validity-in-seconds}") // thời gian hết hạn
+    private long refreshTokenExpiration;
 
     public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
                           UserService userService) {
@@ -60,7 +66,22 @@ public class AuthController {
 
         //create refresh token
         String refresh_token = this.securityUtil.createRefeshToken(loginDTO.getUsername(), res);
-        return ResponseEntity.ok().body(res);
+
+        //update user
+        this.userService.updateUserToken(refresh_token, loginDTO.getUsername());
+
+        //set cookies
+        ResponseCookie responseCookies = ResponseCookie
+                .from("refresh_token", refresh_token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration) //thời gian hết hạn cookies
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responseCookies.toString())
+                .body(res);
     }
 
 }

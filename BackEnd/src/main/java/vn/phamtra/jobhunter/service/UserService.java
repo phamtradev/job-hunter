@@ -8,6 +8,9 @@ import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.dto.*;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
+import java.awt.*;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,4 +115,11 @@ public class UserService {
         return res;
     }
 
+    public void updateUserToken(String token, String email) {
+        User currentUser = this.handleGetUserByUsername(email);
+        if (currentUser != null) {
+            currentUser.setRefreshToken(token);
+            this.userRepository.save(currentUser);
+        }
+    }
 }
