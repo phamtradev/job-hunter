@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.dto.LoginDTO;
 import vn.phamtra.jobhunter.domain.dto.ResLoginDTO;
+import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.util.Optional;
@@ -23,10 +25,12 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
+    private final UserService userService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil, UserService userService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -43,6 +47,12 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
+        User currentUserDB = this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        if (currentUserDB != null) {
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(), currentUserDB.getName()); //khởi tạo bằng static bên ResLoginDTO
+            res.setUser(userLogin);
+        }
+
         res.setAccessToken(access_token);
         return ResponseEntity.ok().body(res);
     }
