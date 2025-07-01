@@ -65,7 +65,7 @@ const Header = (props: any) => {
                         }}>☰</div>
                         <div className='page-header__logo'>
                             <span className='logo'>
-                                <span onClick={() => navigate('/')}> <FaReact className='rotate icon-react' />Hỏi Dân !T</span>
+                                <span onClick={() => navigate('/')}> <FaReact className='rotate icon-react' />Phamtra</span>
 
                                 <VscSearchFuzzy className='icon-search' />
                             </span>

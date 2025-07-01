@@ -1,27 +1,11 @@
-import { callFetchUser } from "@/config/api";
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
-    const [id, setId] = useState<string>("");
-    const [user, setUser] = useState("");
-
-    const handleSearchUser = async () => {
-        const res = await callFetchUser(id);
-        if (res) setUser(res)
-    }
-
     return (
-        <div>
-            <br />
-            <div>
-                homepage:
-                <input value={id} onChange={(e) => setId(e.target.value)} />
-                <button onClick={() => handleSearchUser()}>Search</button>
-            </div>
-            <div>
-                User data = {JSON.stringify(user)}
-            </div>
-            <br /> <br /> <br />
+        <div style={{ margin: "50px 20px" }}>
+            <h3>
+                <Link to={"/admin"}>Go to Admin</Link>
+            </h3>
         </div>
     )
 }

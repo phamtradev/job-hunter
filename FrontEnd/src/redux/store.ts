@@ -4,11 +4,14 @@ import {
   ThunkAction,
 } from '@reduxjs/toolkit';
 import accountReducer from './slice/accountSlide';
-
+import companyReducer from './slice/companySlide';
+import userReducer from './slice/userSlide';
 
 export const store = configureStore({
   reducer: {
-    account: accountReducer
+    account: accountReducer,
+    company: companyReducer,
+    user: userReducer,
   },
 });
 

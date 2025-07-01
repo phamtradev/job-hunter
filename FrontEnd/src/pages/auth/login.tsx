@@ -1,7 +1,7 @@
 import { Button, Divider, Form, Input, message, notification } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { callLogin } from 'config/api';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '@/redux/slice/accountSlide';
 import styles from 'styles/auth.module.scss';
@@ -9,20 +9,27 @@ import styles from 'styles/auth.module.scss';
 const LoginPage = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
-
     const dispatch = useDispatch();
 
-    const onFinish = async (values: any) => {
+    useEffect(() => {
+        //đã login => redirect to '/'
+        if (localStorage.getItem('access_token')) {
+            // navigate('/');
+            window.location.href = '/';
+        }
+    }, [])
 
+    const onFinish = async (values: any) => {
         const { username, password } = values;
         setIsSubmit(true);
         const res = await callLogin(username, password);
         setIsSubmit(false);
+
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
-            dispatch(setUserLoginInfo(res.data))
+            dispatch(setUserLoginInfo(res.data.user))
             message.success('Đăng nhập tài khoản thành công!');
-            navigate('/')
+            window.location.href = '/';
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",
