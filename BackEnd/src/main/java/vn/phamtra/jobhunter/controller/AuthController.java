@@ -27,7 +27,8 @@ public class AuthController {
     private final SecurityUtil securityUtil;
     private final UserService userService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil, UserService userService) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
+                          UserService userService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
@@ -35,25 +36,30 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
-        //nạp input gồm username/password vào Security
-        UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+        // nạp input gồm username/password vào Security
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                loginDTO.getUsername(), loginDTO.getPassword());
 
-        //xác thực người dùng -> cần ghi đè loadUserByUsername bằng cách tạo UserDetailCustom implement UserDetails
+        // xác thực người dùng -> cần ghi đè loadUserByUsername bằng cách tạo
+        // UserDetailCustom implement UserDetails
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        //tạo token
-        String access_token = this.securityUtil.createToken(authentication);
+        // tạo token
+        String access_token = this.securityUtil.createAccessToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
         User currentUserDB = this.userService.handleGetUserByUsername(loginDTO.getUsername());
         if (currentUserDB != null) {
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(), currentUserDB.getName()); //khởi tạo bằng static bên ResLoginDTO
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(),
+                    currentUserDB.getName()); // khởi tạo bằng static bên ResLoginDTO
             res.setUser(userLogin);
         }
 
         res.setAccessToken(access_token);
+
+        //create refresh token
+        String refresh_token = this.securityUtil.createRefeshToken(loginDTO.getUsername(), res);
         return ResponseEntity.ok().body(res);
     }
 
