@@ -45,7 +45,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults()) //cấu hình mặc định lỗi cors
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/api/v1/auth/login").permitAll()
+                                .requestMatchers("/", "/api/v1/auth/login", "/api/v1/auth/refresh")
+                                .permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenicationEntryPoint)

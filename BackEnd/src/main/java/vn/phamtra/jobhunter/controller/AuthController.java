@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.dto.LoginDTO;
@@ -98,4 +99,14 @@ public class AuthController {
         return ResponseEntity.ok().body(userLogin);
     }
 
+    @GetMapping("/auth/refresh")
+    @ApiMessage("Get User by refresh token")
+    public ResponseEntity<String> getResfreshToken(
+            @CookieValue(name = "refresh_token") String refresh_token
+    ) {
+        //check valid
+        Jwt decodeedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
+        String email = decodeedToken.getSubject();
+        return ResponseEntity.ok().body(email);
+    }
 }
