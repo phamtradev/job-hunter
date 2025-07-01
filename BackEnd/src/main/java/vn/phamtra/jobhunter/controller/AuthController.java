@@ -17,6 +17,7 @@ import vn.phamtra.jobhunter.domain.dto.LoginDTO;
 import vn.phamtra.jobhunter.domain.dto.ResLoginDTO;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
+import vn.phamtra.jobhunter.util.error.IdInvalidException;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class AuthController {
                     currentUserDB.getName()); // khởi tạo bằng static bên ResLoginDTO
             res.setUser(userLogin);
         }
-        String access_token = this.securityUtil.createAccessToken(authentication, res.getUser());
+        String access_token = this.securityUtil.createAccessToken(authentication.getName(), res.getUser());
         res.setAccessToken(access_token);
 
         //create refresh token
@@ -101,12 +102,45 @@ public class AuthController {
 
     @GetMapping("/auth/refresh")
     @ApiMessage("Get User by refresh token")
-    public ResponseEntity<String> getResfreshToken(
-            @CookieValue(name = "refresh_token") String refresh_token
-    ) {
+    public ResponseEntity<ResLoginDTO> getResfreshToken(
+            @CookieValue(name = "refresh_token") String refresh_token) throws IdInvalidException {
         //check valid
         Jwt decodeedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
         String email = decodeedToken.getSubject();
-        return ResponseEntity.ok().body(email);
+
+        //check user by token + email
+        User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
+        if (currentUser == null) {
+            throw new IdInvalidException("Refresh Token ko hop le");
+        }
+
+        ResLoginDTO res = new ResLoginDTO();
+        User currentUserDB = this.userService.handleGetUserByUsername(email);
+        if (currentUserDB != null) {
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(),
+                    currentUserDB.getName()); // khởi tạo bằng static bên ResLoginDTO
+            res.setUser(userLogin);
+        }
+        String access_token = this.securityUtil.createAccessToken(email, res.getUser());
+        res.setAccessToken(access_token);
+
+        //create refresh token
+        String new_refresh_token = this.securityUtil.createRefeshToken(email, res);
+
+        //update user
+        this.userService.updateUserToken(new_refresh_token, email);
+
+        //set cookies
+        ResponseCookie responseCookies = ResponseCookie
+                .from("refresh_token", new_refresh_token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration) //thời gian hết hạn cookies
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responseCookies.toString())
+                .body(res);
     }
 }
