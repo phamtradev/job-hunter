@@ -1,6 +1,8 @@
 package vn.phamtra.jobhunter.domain.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.phamtra.jobhunter.util.constant.GenderEnum;
 
@@ -15,4 +17,15 @@ public class ResUpdateUserDTO {
     private String address;
     private int age;
     private Instant updateAt;
+
+    private CompanyUser company;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CompanyUser {
+        private long id;
+        private String name;
+    }
 }

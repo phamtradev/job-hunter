@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.response.ResCreateUserDTO;
 import vn.phamtra.jobhunter.domain.response.ResUpdateUserDTO;
@@ -11,17 +12,25 @@ import vn.phamtra.jobhunter.domain.response.ResUserDTO;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final CompanyService companyService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CompanyService companyService) {
         this.userRepository = userRepository;
+        this.companyService = companyService;
     }
 
     public User handleCreateUser(User user) {
+        //check company
+        if (user.getCompany() != null) {
+            Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
+            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
         return this.userRepository.save(user);
     }
 
@@ -65,6 +74,12 @@ public class UserService {
             currentUser.setAge(reqUser.getAge());
             currentUser.setGender(reqUser.getGender());
 
+            //check company
+            if (reqUser.getCompany() != null) {
+                Optional<Company> companyOptional = this.companyService.findById(reqUser.getId());
+                reqUser.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+            }
+
             //update
             currentUser = this.userRepository.save(currentUser);
         }
@@ -81,12 +96,21 @@ public class UserService {
 
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
+        ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
+
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setName(user.getName());
         res.setAge(user.getAge());
         res.setCreatedAt(user.getCreatedAt());
         res.setAddress(user.getAddress());
+
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
+
         return res;
     }
 
@@ -105,6 +129,14 @@ public class UserService {
 
     public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
         ResUpdateUserDTO res = new ResUpdateUserDTO();
+        ResUpdateUserDTO.CompanyUser com = new ResUpdateUserDTO.CompanyUser();
+
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
+
         res.setId(user.getId());
         res.setName(user.getName());
         res.setAge(user.getAge());

@@ -43,6 +43,9 @@ public class User {
     private String createdBy;
     private String updateBy;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @PrePersist
     public void handleBeforeCreate() {

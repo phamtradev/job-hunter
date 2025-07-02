@@ -1,6 +1,7 @@
 package vn.phamtra.jobhunter.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.time.Instant;
+import java.util.List;
 
 @Table(name = "companies")
 @Entity
@@ -28,7 +30,7 @@ public class Company {
 
     private String logo;
 
-    //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
+    //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant createdAt;
 
     private Instant updatedAt;
@@ -36,6 +38,11 @@ public class Company {
     private String createdBy;
 
     private String updatedBy;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    //trì hoãn tải dữ liệu (lazy loading), dữ liệu sẽ không được lấy ra ngay lập tức khi truy vấn company
+    @JsonIgnore //fix loi lap vo han
+    List<User> users;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -50,6 +57,5 @@ public class Company {
                 SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
-
 
 }
