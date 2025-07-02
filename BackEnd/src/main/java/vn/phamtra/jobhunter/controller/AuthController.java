@@ -8,19 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.dto.LoginDTO;
+import vn.phamtra.jobhunter.domain.dto.ReqLoginDTO;
 import vn.phamtra.jobhunter.domain.dto.ResLoginDTO;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -41,10 +38,10 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDTO) {
         // nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), loginDTO.getPassword());
+                reqLoginDTO.getUsername(), reqLoginDTO.getPassword());
 
         // xác thực người dùng -> cần ghi đè loadUserByUsername bằng cách tạo
         // UserDetailCustom implement UserDetails
@@ -55,7 +52,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
-        User currentUserDB = this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        User currentUserDB = this.userService.handleGetUserByUsername(reqLoginDTO.getUsername());
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(),
                     currentUserDB.getName()); // khởi tạo bằng static bên ResLoginDTO
@@ -65,10 +62,10 @@ public class AuthController {
         res.setAccessToken(access_token);
 
         //create refresh token
-        String refresh_token = this.securityUtil.createRefeshToken(loginDTO.getUsername(), res);
+        String refresh_token = this.securityUtil.createRefeshToken(reqLoginDTO.getUsername(), res);
 
         //update user
-        this.userService.updateUserToken(refresh_token, loginDTO.getUsername());
+        this.userService.updateUserToken(refresh_token, reqLoginDTO.getUsername());
 
         //set cookies
         ResponseCookie responseCookies = ResponseCookie
