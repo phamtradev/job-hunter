@@ -2,22 +2,15 @@ package vn.phamtra.jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.Company;
-import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.service.CompanyService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
-import vn.phamtra.jobhunter.util.error.IdInvalidException;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")

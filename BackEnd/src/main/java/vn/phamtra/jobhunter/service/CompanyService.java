@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Company;
-import vn.phamtra.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.CompanyRepository;
 
 import java.util.Optional;

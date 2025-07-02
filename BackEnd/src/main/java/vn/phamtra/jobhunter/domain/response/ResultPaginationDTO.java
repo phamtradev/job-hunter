@@ -1,4 +1,4 @@
-package vn.phamtra.jobhunter.domain.dto;
+package vn.phamtra.jobhunter.domain.response;
 
 import lombok.Getter;
 import lombok.Setter;

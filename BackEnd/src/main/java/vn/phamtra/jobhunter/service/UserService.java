@@ -5,13 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.dto.*;
+import vn.phamtra.jobhunter.domain.response.ResCreateUserDTO;
+import vn.phamtra.jobhunter.domain.response.ResUpdateUserDTO;
+import vn.phamtra.jobhunter.domain.response.ResUserDTO;
+import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
-import java.awt.*;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
