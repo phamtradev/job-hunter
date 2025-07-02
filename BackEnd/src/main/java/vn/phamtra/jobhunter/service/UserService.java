@@ -43,7 +43,7 @@ public class UserService {
 
         //khai báo ResultPaginationDTO và Meta để tiến hành set hiển thị các trang
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta mt = new Meta();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         //set các hiển thị
         mt.setPage(pageable.getPageNumber() + 1); //số trang (do trang tính từ trang 0 nên + 1)

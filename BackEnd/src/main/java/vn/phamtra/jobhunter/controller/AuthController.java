@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.dto.ReqLoginDTO;
+import vn.phamtra.jobhunter.domain.request.ReqLoginDTO;
 import vn.phamtra.jobhunter.domain.dto.ResLoginDTO;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
