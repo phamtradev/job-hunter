@@ -1,4 +1,4 @@
-package vn.phamtra.jobhunter.domain;
+package vn.phamtra.jobhunter.domain.response;
 
 public class RestRespone<T> {
     private int statusCode;

@@ -1,6 +1,5 @@
 package vn.phamtra.jobhunter.util.error;
 
-import jakarta.websocket.OnClose;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import vn.phamtra.jobhunter.domain.RestRespone;
+import vn.phamtra.jobhunter.domain.response.RestRespone;
 
 import java.util.ArrayList;
 import java.util.List;
