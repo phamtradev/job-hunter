@@ -6,13 +6,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.response.ResCreateUserDTO;
-import vn.phamtra.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.phamtra.jobhunter.domain.response.ResUserDTO;
+import vn.phamtra.jobhunter.domain.response.User.ResCreateUserDTO;
+import vn.phamtra.jobhunter.domain.response.User.ResUpdateUserDTO;
+import vn.phamtra.jobhunter.domain.response.User.ResUserDTO;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

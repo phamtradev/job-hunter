@@ -8,7 +8,6 @@ import vn.phamtra.jobhunter.domain.Job;
 import vn.phamtra.jobhunter.domain.Skill;
 import vn.phamtra.jobhunter.domain.response.Job.ResCreateJobDTO;
 import vn.phamtra.jobhunter.domain.response.Job.ResUpdateJobDTO;
-import vn.phamtra.jobhunter.domain.response.ResUpdateUserDTO;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.JobRepository;
 import vn.phamtra.jobhunter.repository.SkillRepository;
