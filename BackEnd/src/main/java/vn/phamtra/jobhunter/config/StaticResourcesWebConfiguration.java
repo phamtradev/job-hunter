@@ -9,13 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class StaticResourcesWebConfiguration
         implements WebMvcConfigurer {
 
-    @Value("${phamtra.upload-file.base-path}")
-    private String basePath;
+    @Value("${phamtra.upload-file.base-uri}")
+    private String baseURI;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/storage/**")
-                .addResourceLocations(basePath);
+                .addResourceLocations(baseURI);
     }
 }
-
