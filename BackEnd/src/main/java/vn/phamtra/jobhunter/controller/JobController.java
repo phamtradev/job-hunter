@@ -20,6 +20,7 @@ import vn.phamtra.jobhunter.util.error.IdInvalidException;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/api/v1")
 public class JobController {
     private final JobService jobService;
 

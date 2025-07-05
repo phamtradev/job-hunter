@@ -1,6 +1,7 @@
 package vn.phamtra.jobhunter.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.phamtra.jobhunter.util.constant.ResumeStateEnum;
@@ -17,8 +18,10 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "email khong duuoc de trong")
     private String email;
 
+    @NotBlank(message = "url khong duoc de trong")
     private String url;
 
     @Enumerated(EnumType.STRING)

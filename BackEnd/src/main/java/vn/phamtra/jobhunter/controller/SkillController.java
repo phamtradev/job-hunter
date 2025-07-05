@@ -15,6 +15,7 @@ import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
 @Controller
+@RequestMapping("/api/v1")
 public class SkillController {
 
     private final SkillService skillService;
