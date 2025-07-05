@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.Resume;
+import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.domain.response.Resume.ResCreateResumeDTO;
 import vn.phamtra.jobhunter.domain.response.Resume.ResFetchResumeDTO;
 import vn.phamtra.jobhunter.domain.response.Resume.ResUpdateResumeDTO;
@@ -47,6 +48,12 @@ public class ResumeController {
             throw new IdInvalidException("Resume voi id: " + id + " khong ton tai");
         }
         return ResponseEntity.status(HttpStatus.OK).body(this.resumeService.getResume(reqResumeOptional.get()));
+    }
+
+    @GetMapping("/resumes")
+    @ApiMessage("fetch all resume")
+    public ResponseEntity<ResultPaginationDTO> fetchAll(@Filter Specification<Resume> spec, Pageable pageable) {
+        return ResponseEntity.ok().body(this.resumeService.fetchAllResume(spec, pageable));
     }
 
     @DeleteMapping("/resumes/{id}")

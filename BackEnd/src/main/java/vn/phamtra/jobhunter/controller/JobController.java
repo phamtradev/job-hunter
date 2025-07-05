@@ -2,6 +2,7 @@ package vn.phamtra.jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.Job;
-import vn.phamtra.jobhunter.domain.Skill;
 import vn.phamtra.jobhunter.domain.response.Job.ResCreateJobDTO;
 import vn.phamtra.jobhunter.domain.response.Job.ResUpdateJobDTO;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
@@ -41,7 +41,7 @@ public class JobController {
         if (!currentJob.isPresent()) {
             throw new IdInvalidException("Job not found");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.jobService.updateJob(job));
+        return ResponseEntity.ok().body(this.jobService.updateJob(job, currentJob.get()));
     }
 
     @DeleteMapping("/jobs/{id}")
@@ -63,5 +63,16 @@ public class JobController {
 
         return ResponseEntity.status(HttpStatus.OK).body(this.jobService.fetchAllJob(spec, pageable));
     }
+
+    @GetMapping("/jobs/{id}")
+    @ApiMessage("Get a job by id")
+    public ResponseEntity<Job> getJobById(@PathVariable("id") long id) throws IdInvalidException {
+        Optional<Job> currentJob = this.jobService.fetchJobById(id);
+        if (!currentJob.isPresent()) {
+            throw new IdInvalidException("Job not found");
+        }
+        return ResponseEntity.ok().body(currentJob.get());
+    }
+
 
 }

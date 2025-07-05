@@ -18,7 +18,9 @@ import vn.phamtra.jobhunter.repository.SkillRepository;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ResumeService {
@@ -46,7 +48,7 @@ public class ResumeService {
         if (resume.getJob() == null)
             return false;
         Optional<Job> jobOptional = this.jobRepository.findById(resume.getJob().getId());
-        if (userOptional.isEmpty())
+        if (jobOptional.isEmpty())
             return false;
 
         return true;
@@ -74,6 +76,24 @@ public class ResumeService {
         return this.resumeRepository.findById(id);
     }
 
+    public ResultPaginationDTO fetchAllResume(Specification<Resume> spec, Pageable pageable) {
+        Page<Resume> pageUser = this.resumeRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageUser.getTotalPages());
+        mt.setTotal(pageUser.getTotalElements());
+
+        rs.setMeta(mt);
+
+        List<ResFetchResumeDTO> listResume = pageUser.getContent().stream().map(item -> this.getResume(item)).collect(Collectors.toList());
+        rs.setResult(listResume);
+        return rs;
+    }
+
     public ResFetchResumeDTO getResume(Resume resume) {
 
         ResFetchResumeDTO res = new ResFetchResumeDTO();
@@ -86,6 +106,10 @@ public class ResumeService {
         res.setCreatedBy(resume.getCreatedBy());
         res.setUpdatedAt(resume.getUpdatedAt());
         res.setUpdateBy(resume.getUpdatedBy());
+
+        if (resume.getJob() != null) { //neu cv co cong viec thuoc job
+            res.setCompanyName(resume.getJob().getCompany().getName()); //lay ten cong ty
+        }
 
         res.setUser(new ResFetchResumeDTO.UserResume(resume.getUser().getId(), resume.getUser().getName()));
         res.setJob(new ResFetchResumeDTO.JobResume(resume.getJob().getId(), resume.getJob().getName()));
