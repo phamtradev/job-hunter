@@ -1,5 +1,5 @@
 import { Button, Divider, Form, Input, message, notification } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { callLogin } from 'config/api';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,6 +10,10 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
     const dispatch = useDispatch();
+
+    let location = useLocation();
+    let params = new URLSearchParams(location.search);
+    const callback = params?.get("callback");
 
     useEffect(() => {
         //đã login => redirect to '/'
@@ -29,7 +33,7 @@ const LoginPage = () => {
             localStorage.setItem('access_token', res.data.access_token);
             dispatch(setUserLoginInfo(res.data.user))
             message.success('Đăng nhập tài khoản thành công!');
-            window.location.href = '/';
+            window.location.href = callback ? callback : '/';
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",

@@ -1,33 +1,31 @@
 import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { IResume } from "@/types/backend";
+import { IJob } from "@/types/backend";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
-import { Space, message, notification } from "antd";
-import { useState, useRef } from 'react';
+import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
+import { useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteResume } from "@/config/api";
+import { callDeleteJob } from "@/config/api";
 import queryString from 'query-string';
-import { fetchResume } from "@/redux/slice/resumeSlide";
-import ViewDetailResume from "@/components/admin/resume/view.resume";
+import { useNavigate } from "react-router-dom";
+import { fetchJob } from "@/redux/slice/jobSlide";
 import { sfIn } from "spring-filter-query-builder";
-import { EditOutlined } from "@ant-design/icons";
 
-const ResumePage = () => {
+const JobPage = () => {
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.resume.isFetching);
-    const meta = useAppSelector(state => state.resume.meta);
-    const resumes = useAppSelector(state => state.resume.result);
+    const isFetching = useAppSelector(state => state.job.isFetching);
+    const meta = useAppSelector(state => state.job.meta);
+    const jobs = useAppSelector(state => state.job.result);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
-    const [dataInit, setDataInit] = useState<IResume | null>(null);
-    const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
-
-    const handleDeleteResume = async (id: string | undefined) => {
+    const handleDeleteJob = async (id: string | undefined) => {
         if (id) {
-            const res = await callDeleteResume(id);
+            const res = await callDeleteJob(id);
             if (res && res.data) {
-                message.success('Xóa Resume thành công');
+                message.success('Xóa Job thành công');
                 reloadTable();
             } else {
                 notification.error({
@@ -42,51 +40,69 @@ const ResumePage = () => {
         tableRef?.current?.reload();
     }
 
-    const columns: ProColumns<IResume>[] = [
+    const columns: ProColumns<IJob>[] = [
         {
-            title: 'Id',
-            dataIndex: 'id',
+            title: 'STT',
+            key: 'index',
             width: 50,
-            render: (text, record, index, action) => {
+            align: "center",
+            render: (text, record, index) => {
                 return (
-                    <a href="#" onClick={() => {
-                        setOpenViewDetail(true);
-                        setDataInit(record);
-                    }}>
-                        {record.id}
-                    </a>
-                )
+                    <>
+                        {(index + 1) + (meta.page - 1) * (meta.pageSize)}
+                    </>)
             },
             hideInSearch: true,
         },
         {
-            title: 'Trạng Thái',
-            dataIndex: 'status',
+            title: 'Tên Job',
+            dataIndex: 'name',
             sorter: true,
+        },
+        {
+            title: 'Công ty',
+            dataIndex: ["company", "name"],
+            sorter: true,
+            hideInSearch: true,
+        },
+        {
+            title: 'Mức lương',
+            dataIndex: 'salary',
+            sorter: true,
+            render(dom, entity, index, action, schema) {
+                const str = "" + entity.salary;
+                return <>{str?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</>
+            },
+        },
+        {
+            title: 'Level',
+            dataIndex: 'level',
             renderFormItem: (item, props, form) => (
                 <ProFormSelect
                     showSearch
                     mode="multiple"
                     allowClear
                     valueEnum={{
-                        PENDING: 'PENDING',
-                        REVIEWING: 'REVIEWING',
-                        APPROVED: 'APPROVED',
-                        REJECTED: 'REJECTED',
+                        INTERN: 'INTERN',
+                        FRESHER: 'FRESHER',
+                        JUNIOR: 'JUNIOR',
+                        MIDDLE: 'MIDDLE',
+                        SENIOR: 'SENIOR',
                     }}
                     placeholder="Chọn level"
                 />
             ),
         },
-
         {
-            title: 'Job',
-            dataIndex: ["job", "name"],
-            hideInSearch: true,
-        },
-        {
-            title: 'Company',
-            dataIndex: "companyName",
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            render(dom, entity, index, action, schema) {
+                return <>
+                    <Tag color={entity.active ? "lime" : "red"} >
+                        {entity.active ? "ACTIVE" : "INACTIVE"}
+                    </Tag>
+                </>
+            },
             hideInSearch: true,
         },
 
@@ -118,7 +134,7 @@ const ResumePage = () => {
 
             title: 'Actions',
             hideInSearch: true,
-            width: 100,
+            width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
                     <EditOutlined
@@ -128,16 +144,15 @@ const ResumePage = () => {
                         }}
                         type=""
                         onClick={() => {
-                            setOpenViewDetail(true);
-                            setDataInit(entity);
+                            navigate(`/admin/job/upsert?id=${entity.id}`)
                         }}
                     />
 
-                    {/* <Popconfirm
+                    <Popconfirm
                         placement="leftTop"
-                        title={"Xác nhận xóa resume"}
-                        description={"Bạn có chắc chắn muốn xóa resume này ?"}
-                        onConfirm={() => handleDeleteResume(entity.id)}
+                        title={"Xác nhận xóa job"}
+                        description={"Bạn có chắc chắn muốn xóa job này ?"}
+                        onConfirm={() => handleDeleteJob(entity.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
                     >
@@ -149,7 +164,7 @@ const ResumePage = () => {
                                 }}
                             />
                         </span>
-                    </Popconfirm> */}
+                    </Popconfirm>
                 </Space>
             ),
 
@@ -157,31 +172,37 @@ const ResumePage = () => {
     ];
 
     const buildQuery = (params: any, sort: any, filter: any) => {
-        const clone = { ...params };
 
-        if (clone?.status?.length) {
-            clone.filter = sfIn("status", clone.status).toString();
-            delete clone.status;
+        const clone = { ...params };
+        let parts = [];
+        if (clone.name) parts.push(`name ~ '${clone.name}'`);
+        if (clone.salary) parts.push(`salary ~ '${clone.salary}'`);
+        if (clone?.level?.length) {
+            parts.push(`${sfIn("level", clone.level).toString()}`);
         }
+
+        clone.filter = parts.join(' and ');
 
         clone.page = clone.current;
         clone.size = clone.pageSize;
 
         delete clone.current;
         delete clone.pageSize;
+        delete clone.name;
+        delete clone.salary;
+        delete clone.level;
 
         let temp = queryString.stringify(clone);
 
         let sortBy = "";
-        if (sort && sort.status) {
-            sortBy = sort.status === 'ascend' ? "sort=status,asc" : "sort=status,desc";
-        }
-
-        if (sort && sort.createdAt) {
-            sortBy = sort.createdAt === 'ascend' ? "sort=createdAt,asc" : "sort=createdAt,desc";
-        }
-        if (sort && sort.updatedAt) {
-            sortBy = sort.updatedAt === 'ascend' ? "sort=updatedAt,asc" : "sort=updatedAt,desc";
+        const fields = ["name", "salary", "createdAt", "updatedAt"];
+        if (sort) {
+            for (const field of fields) {
+                if (sort[field]) {
+                    sortBy = `sort=${field},${sort[field] === 'ascend' ? 'asc' : 'desc'}`;
+                    break;  // Remove this if you want to handle multiple sort parameters
+                }
+            }
         }
 
         //mặc định sort theo updatedAt
@@ -191,22 +212,21 @@ const ResumePage = () => {
             temp = `${temp}&${sortBy}`;
         }
 
-        // temp += "&populate=companyId,jobId&fields=companyId.id, companyId.name, companyId.logo, jobId.id, jobId.name";
         return temp;
     }
 
     return (
         <div>
-            <DataTable<IResume>
+            <DataTable<IJob>
                 actionRef={tableRef}
-                headerTitle="Danh sách Resumes"
+                headerTitle="Danh sách Jobs"
                 rowKey="id"
                 loading={isFetching}
                 columns={columns}
-                dataSource={resumes}
+                dataSource={jobs}
                 request={async (params, sort, filter): Promise<any> => {
                     const query = buildQuery(params, sort, filter);
-                    dispatch(fetchResume({ query }))
+                    dispatch(fetchJob({ query }))
                 }}
                 scroll={{ x: true }}
                 pagination={
@@ -221,19 +241,18 @@ const ResumePage = () => {
                 rowSelection={false}
                 toolBarRender={(_action, _rows): any => {
                     return (
-                        <></>
+                        <Button
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            onClick={() => navigate('upsert')}
+                        >
+                            Thêm mới
+                        </Button>
                     );
                 }}
-            />
-            <ViewDetailResume
-                open={openViewDetail}
-                onClose={setOpenViewDetail}
-                dataInit={dataInit}
-                setDataInit={setDataInit}
-                reloadTable={reloadTable}
             />
         </div>
     )
 }
 
-export default ResumePage;
+export default JobPage;

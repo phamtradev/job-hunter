@@ -11,8 +11,7 @@ export const fetchAccount = createAsyncThunk(
 )
 
 const initialState = {
-    // isAuthenticated: false,
-    isAuthenticated: true,
+    isAuthenticated: false,
     isLoading: true,
     isRefreshToken: false,
     errorRefreshToken: "",
@@ -74,7 +73,7 @@ export const accountSlide = createSlice({
             if (action.payload) {
                 state.isAuthenticated = true;
                 state.isLoading = false;
-                state.user = { ...state.user, ...action.payload.user }
+                state.user = { ...state.user, ...action?.payload?.user }
             }
         })
 

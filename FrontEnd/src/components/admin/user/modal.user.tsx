@@ -13,7 +13,11 @@ interface IProps {
     reloadTable: () => void;
 }
 
-
+export interface ICompanySelect {
+    label: string;
+    value: string;
+    key?: string;
+}
 
 const ModalUser = (props: IProps) => {
     const { openModal, setOpenModal, reloadTable, dataInit, setDataInit } = props;

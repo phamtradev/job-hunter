@@ -1,11 +1,20 @@
-import { Link } from "react-router-dom";
+import { Divider } from 'antd';
+import styles from 'styles/client.module.scss';
+import SearchClient from '@/components/client/search.client';
+import JobCard from '@/components/client/card/job.card';
+import CompanyCard from '@/components/client/card/company.card';
 
 const HomePage = () => {
     return (
-        <div style={{ margin: "50px 20px" }}>
-            <h3>
-                <Link to={"/admin"}>Go to Admin</Link>
-            </h3>
+        <div className={`${styles["container"]} ${styles["home-section"]}`}>
+            <div className="search-content" style={{ marginTop: 20 }}>
+                <SearchClient />
+            </div>
+            <Divider />
+            <CompanyCard />
+            <div style={{ margin: 50 }}></div>
+            <Divider />
+            <JobCard />
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { callFetchUser } from '@/config/api';
-import { IUser } from '@/types/backend';
+import { callFetchAllSkill } from '@/config/api';
+import { ISkill } from '@/types/backend';
 
 interface IState {
     isFetching: boolean;
@@ -10,13 +10,13 @@ interface IState {
         pages: number;
         total: number;
     },
-    result: IUser[]
+    result: ISkill[]
 }
 // First, create the thunk
-export const fetchUser = createAsyncThunk(
-    'user/fetchUser',
+export const fetchSkill = createAsyncThunk(
+    'skill/fetchSkill',
     async ({ query }: { query: string }) => {
-        const response = await callFetchUser(query);
+        const response = await callFetchAllSkill(query);
         return response;
     }
 )
@@ -34,8 +34,8 @@ const initialState: IState = {
 };
 
 
-export const userSlide = createSlice({
-    name: 'user',
+export const skillSlide = createSlice({
+    name: 'skill',
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
@@ -48,19 +48,19 @@ export const userSlide = createSlice({
     },
     extraReducers: (builder) => {
         // Add reducers for additional action types here, and handle loading state as needed
-        builder.addCase(fetchUser.pending, (state, action) => {
+        builder.addCase(fetchSkill.pending, (state, action) => {
             state.isFetching = true;
             // Add user to the state array
             // state.courseOrder = action.payload;
         })
 
-        builder.addCase(fetchUser.rejected, (state, action) => {
+        builder.addCase(fetchSkill.rejected, (state, action) => {
             state.isFetching = false;
             // Add user to the state array
             // state.courseOrder = action.payload;
         })
 
-        builder.addCase(fetchUser.fulfilled, (state, action) => {
+        builder.addCase(fetchSkill.fulfilled, (state, action) => {
             if (action.payload && action.payload.data) {
                 state.isFetching = false;
                 state.meta = action.payload.data.meta;
@@ -76,6 +76,6 @@ export const userSlide = createSlice({
 
 export const {
     setActiveMenu,
-} = userSlide.actions;
+} = skillSlide.actions;
 
-export default userSlide.reducer;
+export default skillSlide.reducer;

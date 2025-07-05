@@ -1,7 +1,7 @@
 {
   "name": "react-vite-jobhunter",
-  "author": "Phạm Trà",
-  "description": "Frontend",
+  "author": "Hỏi Dân IT với Eric",
+  "description": "Frontend for series Spring Restful Youtube Hỏi Dân IT",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -21,10 +21,11 @@
     "axios": "1.6.5",
     "dayjs": "1.11.8",
     "dotenv": "16.0.3",
+    "html-react-parser": "4.0.0",
     "lodash": "4.17.21",
     "query-string": "8.1.0",
     "react": "18.2.0",
-    "react-countup": "^6.4.2",
+    "react-countup": "6.4.2",
     "react-device-detect": "2.2.3",
     "react-dom": "18.2.0",
     "react-icons": "4.8.0",
@@ -32,6 +33,7 @@
     "react-redux": "8.0.5",
     "react-router-dom": "6.11.2",
     "react-spinners": "0.13.8",
+    "uuid": "9.0.0",
     "spring-filter-query-builder": "1.1.0"
   },
   "devDependencies": {
@@ -40,6 +42,7 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "@types/react-router-dom": "5.3.3",
+    "@types/uuid": "9.0.2",
     "@vitejs/plugin-react-swc": "3.0.0",
     "rollup-plugin-visualizer": "5.9.0",
     "sass": "1.62.1",

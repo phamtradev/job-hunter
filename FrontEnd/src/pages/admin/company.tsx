@@ -3,7 +3,7 @@ import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchCompany } from "@/redux/slice/companySlide";
 import { ICompany } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined, QqCircleFilled } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
@@ -44,15 +44,15 @@ const CompanyPage = () => {
 
     const columns: ProColumns<ICompany>[] = [
         {
-            title: 'Id',
-            dataIndex: 'id',
-            width: 250,
-            render: (text, record, index, action) => {
+            title: 'STT',
+            key: 'index',
+            width: 50,
+            align: "center",
+            render: (text, record, index) => {
                 return (
-                    <span>
-                        {record.id}
-                    </span>
-                )
+                    <>
+                        {(index + 1) + (meta.page - 1) * (meta.pageSize)}
+                    </>)
             },
             hideInSearch: true,
         },
@@ -98,6 +98,7 @@ const CompanyPage = () => {
             width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
+
                     <EditOutlined
                         style={{
                             fontSize: 20,
@@ -194,7 +195,7 @@ const CompanyPage = () => {
                 scroll={{ x: true }}
                 pagination={
                     {
-                        current: meta.current,
+                        current: meta.page,
                         pageSize: meta.pageSize,
                         showSizeChanger: true,
                         total: meta.total,

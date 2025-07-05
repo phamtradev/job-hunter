@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     AppstoreOutlined,
     ExceptionOutlined,
@@ -14,7 +14,7 @@ import {
     ScheduleOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, message, Avatar, Button } from 'antd';
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { callLogout } from 'config/api';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -27,12 +27,18 @@ const { Content, Footer, Sider } = Layout;
 
 
 const LayoutAdmin = () => {
+    const location = useLocation();
+
     const [collapsed, setCollapsed] = useState(false);
-    const [activeMenu, setActiveMenu] = useState('dashboard');
+    const [activeMenu, setActiveMenu] = useState('');
     const user = useAppSelector(state => state.account.user);
 
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        setActiveMenu(location.pathname)
+    }, [location])
 
     const handleLogout = async () => {
         const res = await callLogout();
@@ -46,37 +52,37 @@ const LayoutAdmin = () => {
     const items: MenuProps['items'] = [
         {
             label: <Link to='/admin'>Dashboard</Link>,
-            key: 'dashboard',
+            key: '/admin',
             icon: <AppstoreOutlined />
         },
         {
             label: <Link to='/admin/company'>Company</Link>,
-            key: 'company',
+            key: '/admin/company',
             icon: <BankOutlined />,
         },
         {
             label: <Link to='/admin/user'>User</Link>,
-            key: 'user',
+            key: '/admin/user',
             icon: <UserOutlined />
         },
         {
             label: <Link to='/admin/job'>Job</Link>,
-            key: 'job',
+            key: '/admin/job',
             icon: <ScheduleOutlined />
         },
         {
             label: <Link to='/admin/resume'>Resume</Link>,
-            key: 'resume',
+            key: '/admin/resume',
             icon: <AliwangwangOutlined />
         },
         {
             label: <Link to='/admin/permission'>Permission</Link>,
-            key: 'permission',
+            key: '/admin/permission',
             icon: <ApiOutlined />
         },
         {
             label: <Link to='/admin/role'>Role</Link>,
-            key: 'role',
+            key: '/admin/role',
             icon: <ExceptionOutlined />
         },
 
@@ -123,7 +129,7 @@ const LayoutAdmin = () => {
                             <BugOutlined />  ADMIN
                         </div>
                         <Menu
-                            defaultSelectedKeys={[activeMenu]}
+                            selectedKeys={[activeMenu]}
                             mode="inline"
                             items={items}
                             onClick={(e) => setActiveMenu(e.key)}
@@ -131,7 +137,7 @@ const LayoutAdmin = () => {
                     </Sider>
                     :
                     <Menu
-                        defaultSelectedKeys={[activeMenu]}
+                        selectedKeys={[activeMenu]}
                         items={items}
                         onClick={(e) => setActiveMenu(e.key)}
                         mode="horizontal"

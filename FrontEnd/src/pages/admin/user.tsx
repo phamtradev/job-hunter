@@ -2,7 +2,7 @@ import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchUser } from "@/redux/slice/userSlide";
 import { IUser } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
@@ -46,18 +46,15 @@ const UserPage = () => {
 
     const columns: ProColumns<IUser>[] = [
         {
-            title: 'Id',
-            dataIndex: 'id',
-            width: 250,
-            render: (text, record, index, action) => {
+            title: 'STT',
+            key: 'index',
+            width: 50,
+            align: "center",
+            render: (text, record, index) => {
                 return (
-                    <a href="#" onClick={() => {
-                        setOpenViewDetail(true);
-                        setDataInit(record);
-                    }}>
-                        {record.id}
-                    </a>
-                )
+                    <>
+                        {(index + 1) + (meta.page - 1) * (meta.pageSize)}
+                    </>)
             },
             hideInSearch: true,
         },
@@ -103,6 +100,18 @@ const UserPage = () => {
             width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
+                    <EyeOutlined
+                        style={{
+                            fontSize: 20,
+                            color: '#818181',
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            setOpenViewDetail(true);
+                            setDataInit(entity);
+                        }}
+                    />
+
                     <EditOutlined
                         style={{
                             fontSize: 20,
@@ -196,7 +205,7 @@ const UserPage = () => {
                 scroll={{ x: true }}
                 pagination={
                     {
-                        current: meta.current,
+                        current: meta.page,
                         pageSize: meta.pageSize,
                         showSizeChanger: true,
                         total: meta.total,

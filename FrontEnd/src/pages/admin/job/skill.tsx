@@ -1,33 +1,34 @@
+
 import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { IResume } from "@/types/backend";
-import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
-import { Space, message, notification } from "antd";
+import { ISkill } from "@/types/backend";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteResume } from "@/config/api";
+import { callDeleteSkill } from "@/config/api";
 import queryString from 'query-string';
-import { fetchResume } from "@/redux/slice/resumeSlide";
-import ViewDetailResume from "@/components/admin/resume/view.resume";
-import { sfIn } from "spring-filter-query-builder";
-import { EditOutlined } from "@ant-design/icons";
+import { sfLike } from "spring-filter-query-builder";
+import { fetchSkill } from "@/redux/slice/skillSlide";
+import ModalSkill from "@/components/admin/skill/modal.skill";
 
-const ResumePage = () => {
+const SkillPage = () => {
+    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [dataInit, setDataInit] = useState<ISkill | null>(null);
+
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.resume.isFetching);
-    const meta = useAppSelector(state => state.resume.meta);
-    const resumes = useAppSelector(state => state.resume.result);
+    const isFetching = useAppSelector(state => state.skill.isFetching);
+    const meta = useAppSelector(state => state.skill.meta);
+    const skills = useAppSelector(state => state.skill.result);
     const dispatch = useAppDispatch();
 
-    const [dataInit, setDataInit] = useState<IResume | null>(null);
-    const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
-
-    const handleDeleteResume = async (id: string | undefined) => {
+    const handleDeleteSkill = async (id: string | undefined) => {
         if (id) {
-            const res = await callDeleteResume(id);
-            if (res && res.data) {
-                message.success('Xóa Resume thành công');
+            const res = await callDeleteSkill(id);
+            if (res && +res.statusCode === 200) {
+                message.success('Xóa Skill thành công');
                 reloadTable();
             } else {
                 notification.error({
@@ -42,53 +43,38 @@ const ResumePage = () => {
         tableRef?.current?.reload();
     }
 
-    const columns: ProColumns<IResume>[] = [
+    const columns: ProColumns<ISkill>[] = [
         {
-            title: 'Id',
-            dataIndex: 'id',
+            title: 'STT',
+            key: 'index',
             width: 50,
-            render: (text, record, index, action) => {
+            align: "center",
+            render: (text, record, index) => {
                 return (
-                    <a href="#" onClick={() => {
-                        setOpenViewDetail(true);
-                        setDataInit(record);
-                    }}>
-                        {record.id}
-                    </a>
-                )
+                    <>
+                        {(index + 1) + (meta.page - 1) * (meta.pageSize)}
+                    </>)
             },
             hideInSearch: true,
         },
         {
-            title: 'Trạng Thái',
-            dataIndex: 'status',
+            title: 'Name',
+            dataIndex: 'name',
             sorter: true,
-            renderFormItem: (item, props, form) => (
-                <ProFormSelect
-                    showSearch
-                    mode="multiple"
-                    allowClear
-                    valueEnum={{
-                        PENDING: 'PENDING',
-                        REVIEWING: 'REVIEWING',
-                        APPROVED: 'APPROVED',
-                        REJECTED: 'REJECTED',
-                    }}
-                    placeholder="Chọn level"
-                />
-            ),
         },
 
         {
-            title: 'Job',
-            dataIndex: ["job", "name"],
+            title: 'Created By',
+            dataIndex: 'createdBy',
             hideInSearch: true,
         },
+
         {
-            title: 'Company',
-            dataIndex: "companyName",
+            title: 'Updated By',
+            dataIndex: 'updatedBy',
             hideInSearch: true,
         },
+
 
         {
             title: 'CreatedAt',
@@ -118,9 +104,10 @@ const ResumePage = () => {
 
             title: 'Actions',
             hideInSearch: true,
-            width: 100,
+            width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
+
                     <EditOutlined
                         style={{
                             fontSize: 20,
@@ -128,16 +115,16 @@ const ResumePage = () => {
                         }}
                         type=""
                         onClick={() => {
-                            setOpenViewDetail(true);
+                            setOpenModal(true);
                             setDataInit(entity);
                         }}
                     />
 
-                    {/* <Popconfirm
+                    <Popconfirm
                         placement="leftTop"
-                        title={"Xác nhận xóa resume"}
-                        description={"Bạn có chắc chắn muốn xóa resume này ?"}
-                        onConfirm={() => handleDeleteResume(entity.id)}
+                        title={"Xác nhận xóa skill"}
+                        description={"Bạn có chắc chắn muốn xóa skill này ?"}
+                        onConfirm={() => handleDeleteSkill(entity.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
                     >
@@ -149,7 +136,7 @@ const ResumePage = () => {
                                 }}
                             />
                         </span>
-                    </Popconfirm> */}
+                    </Popconfirm>
                 </Space>
             ),
 
@@ -158,23 +145,20 @@ const ResumePage = () => {
 
     const buildQuery = (params: any, sort: any, filter: any) => {
         const clone = { ...params };
-
-        if (clone?.status?.length) {
-            clone.filter = sfIn("status", clone.status).toString();
-            delete clone.status;
+        const q: any = {
+            page: params.current,
+            size: params.pageSize,
+            filter: ""
         }
 
-        clone.page = clone.current;
-        clone.size = clone.pageSize;
+        if (clone.name) q.filter = `${sfLike("name", clone.name)}`;
+        if (!q.filter) delete q.filter;
 
-        delete clone.current;
-        delete clone.pageSize;
-
-        let temp = queryString.stringify(clone);
+        let temp = queryString.stringify(q);
 
         let sortBy = "";
-        if (sort && sort.status) {
-            sortBy = sort.status === 'ascend' ? "sort=status,asc" : "sort=status,desc";
+        if (sort && sort.name) {
+            sortBy = sort.name === 'ascend' ? "sort=name,asc" : "sort=name,desc";
         }
 
         if (sort && sort.createdAt) {
@@ -191,22 +175,21 @@ const ResumePage = () => {
             temp = `${temp}&${sortBy}`;
         }
 
-        // temp += "&populate=companyId,jobId&fields=companyId.id, companyId.name, companyId.logo, jobId.id, jobId.name";
         return temp;
     }
 
     return (
         <div>
-            <DataTable<IResume>
+            <DataTable<ISkill>
                 actionRef={tableRef}
-                headerTitle="Danh sách Resumes"
+                headerTitle="Danh sách Skill"
                 rowKey="id"
                 loading={isFetching}
                 columns={columns}
-                dataSource={resumes}
+                dataSource={skills}
                 request={async (params, sort, filter): Promise<any> => {
                     const query = buildQuery(params, sort, filter);
-                    dispatch(fetchResume({ query }))
+                    dispatch(fetchSkill({ query }))
                 }}
                 scroll={{ x: true }}
                 pagination={
@@ -221,19 +204,25 @@ const ResumePage = () => {
                 rowSelection={false}
                 toolBarRender={(_action, _rows): any => {
                     return (
-                        <></>
+                        <Button
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            onClick={() => setOpenModal(true)}
+                        >
+                            Thêm mới
+                        </Button>
                     );
                 }}
             />
-            <ViewDetailResume
-                open={openViewDetail}
-                onClose={setOpenViewDetail}
+            <ModalSkill
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                reloadTable={reloadTable}
                 dataInit={dataInit}
                 setDataInit={setDataInit}
-                reloadTable={reloadTable}
             />
         </div>
     )
 }
 
-export default ResumePage;
+export default SkillPage;
