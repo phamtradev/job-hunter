@@ -1,45 +1,45 @@
 package vn.phamtra.jobhunter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import vn.phamtra.jobhunter.util.constant.ResumeStateEnum;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Table(name = "resumes")
+@Table(name = "permssions")
 @Getter
 @Setter
-public class Resume {
+public class Permission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "email khong duuoc de trong")
-    private String email;
+    @NotBlank(message = "name khong duoc trong")
+    private String name;
 
-    @NotBlank(message = "url khong duoc de trong")
-    private String url;
+    @NotBlank(message = "apiPath khong duoc trong")
+    private String apiPath;
 
-    @Enumerated(EnumType.STRING)
-    private ResumeStateEnum status;
+    @NotBlank(message = "method khong duoc trong")
+    private String method;
+
+    @NotBlank(message = "module khong duoc trong")
+    private String module;
 
     private Instant createdAt;
     private Instant updatedAt;
-
     private String createdBy;
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "job_id")
-    private Job job;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
+    @JsonIgnore
+    private List<Role> roles;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -54,4 +54,6 @@ public class Resume {
                 SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
+
+
 }

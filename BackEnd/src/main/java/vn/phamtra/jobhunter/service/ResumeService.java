@@ -6,7 +6,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Job;
 import vn.phamtra.jobhunter.domain.Resume;
-import vn.phamtra.jobhunter.domain.Skill;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.domain.response.Resume.ResCreateResumeDTO;
@@ -14,10 +13,8 @@ import vn.phamtra.jobhunter.domain.response.Resume.ResFetchResumeDTO;
 import vn.phamtra.jobhunter.domain.response.Resume.ResUpdateResumeDTO;
 import vn.phamtra.jobhunter.repository.JobRepository;
 import vn.phamtra.jobhunter.repository.ResumeRepository;
-import vn.phamtra.jobhunter.repository.SkillRepository;
 import vn.phamtra.jobhunter.repository.UserRepository;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
