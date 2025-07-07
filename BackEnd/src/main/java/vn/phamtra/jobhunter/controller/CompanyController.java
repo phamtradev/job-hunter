@@ -16,7 +16,7 @@ import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1") //api
 public class CompanyController {
 
 
