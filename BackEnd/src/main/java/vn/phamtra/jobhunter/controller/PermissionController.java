@@ -1,25 +1,19 @@
 package vn.phamtra.jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.Permission;
-import vn.phamtra.jobhunter.domain.Resume;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
-import vn.phamtra.jobhunter.domain.response.Resume.ResCreateResumeDTO;
-import vn.phamtra.jobhunter.domain.response.Resume.ResUpdateResumeDTO;
 import vn.phamtra.jobhunter.service.PermissionService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v1")
