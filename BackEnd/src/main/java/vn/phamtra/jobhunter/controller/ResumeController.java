@@ -80,4 +80,10 @@ public class ResumeController {
         reqResume.setStatus(resume.getStatus());
         return ResponseEntity.ok().body(this.resumeService.updateResume(reqResume));
     }
+
+    @PostMapping("resumes/by-user")
+    @ApiMessage("Get list resumes by user")
+    public ResponseEntity<ResultPaginationDTO> fetchResumeByUser(Pageable pageable) {
+        return ResponseEntity.ok().body(this.resumeService.fetchResumeByUser(pageable));
+    }
 }
