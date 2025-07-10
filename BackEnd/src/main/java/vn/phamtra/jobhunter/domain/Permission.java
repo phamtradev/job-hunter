@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "permssions")
+@Table(name = "permissions")
 @Getter
 @Setter
 public class Permission {
