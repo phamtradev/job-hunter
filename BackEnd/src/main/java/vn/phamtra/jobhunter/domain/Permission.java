@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Table(name = "permissions")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Permission {
 
     @Id
@@ -36,6 +38,13 @@ public class Permission {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    public Permission(String name, String apiPath, String method, String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = method;
+        this.module = module;
+    }
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
     @JsonIgnore
