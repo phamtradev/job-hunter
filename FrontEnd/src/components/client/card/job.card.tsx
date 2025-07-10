@@ -1,12 +1,14 @@
 import { callFetchJob } from '@/config/api';
-import { LOCATION_LIST, convertSlug, getLocationName } from '@/config/utils';
+import { convertSlug, getLocationName } from '@/config/utils';
 import { IJob } from '@/types/backend';
 import { EnvironmentOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { Card, Col, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styles from 'styles/client.module.scss';
+import { sfIn } from "spring-filter-query-builder";
+
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
@@ -23,15 +25,17 @@ const JobCard = (props: IProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(6);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
     const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const location = useLocation();
 
     useEffect(() => {
         fetchJob();
-    }, [current, pageSize, filter, sortQuery]);
+    }, [current, pageSize, filter, sortQuery, location]);
 
     const fetchJob = async () => {
         setIsLoading(true)
@@ -43,12 +47,30 @@ const JobCard = (props: IProps) => {
             query += `&${sortQuery}`;
         }
 
+        //check query string
+        const queryLocation = searchParams.get("location");
+        const querySkills = searchParams.get("skills")
+        if (queryLocation || querySkills) {
+            let q = "";
+            if (queryLocation) {
+                q = sfIn("location", queryLocation.split(",")).toString();
+            }
+
+            if (querySkills) {
+                q = queryLocation ?
+                    q + " and " + `${sfIn("skills", querySkills.split(","))}`
+                    : `${sfIn("skills", querySkills.split(","))}`;
+            }
+
+            query += `&filter=${encodeURIComponent(q)}`;
+        }
+
         const res = await callFetchJob(query);
         if (res && res.data) {
             setDisplayJob(res.data.result);
             setTotal(res.data.meta.total)
         }
-        setIsLoading(false)
+        setIsLoading(false);
     }
 
 
@@ -83,7 +105,6 @@ const JobCard = (props: IProps) => {
                         </Col>
 
                         {displayJob?.map(item => {
-                            console.log(">>> check job: ", item, dayjs(item.updatedAt).fromNow())
                             return (
                                 <Col span={24} md={12} key={item.id}>
                                     <Card size="small" title={null} hoverable
@@ -100,7 +121,7 @@ const JobCard = (props: IProps) => {
                                                 <div className={styles["job-title"]}>{item.name}</div>
                                                 <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item.location)}</div>
                                                 <div><ThunderboltOutlined style={{ color: 'orange' }} />&nbsp;{(item.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
-                                                <div className={styles["job-updatedAt"]}>{dayjs(item.updatedAt).locale('en').fromNow()}</div>
+                                                <div className={styles["job-updatedAt"]}>{item.updatedAt ? dayjs(item.updatedAt).locale('en').fromNow() : dayjs(item.createdAt).locale('en').fromNow()}</div>
                                             </div>
                                         </div>
 

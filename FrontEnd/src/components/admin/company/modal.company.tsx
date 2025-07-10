@@ -55,7 +55,6 @@ const ModalCompany = (props: IProps) => {
                 name: dataInit.logo,
                 uid: uuidv4(),
             }])
-
         }
     }, [dataInit])
 

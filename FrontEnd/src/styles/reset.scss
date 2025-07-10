@@ -35,3 +35,9 @@
         }
     }
 }
+
+.customize-form-item {
+    .ant-form-item {
+        margin-bottom: 0 !important;
+    }
+}

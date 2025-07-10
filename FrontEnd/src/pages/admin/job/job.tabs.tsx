@@ -2,6 +2,8 @@ import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import JobPage from './job';
 import SkillPage from './skill';
+import Access from '@/components/share/access';
+import { ALL_PERMISSIONS } from '@/config/permissions';
 
 const JobTabs = () => {
     const onChange = (key: string) => {
@@ -23,12 +25,15 @@ const JobTabs = () => {
     ];
     return (
         <div>
-            <Tabs
-                defaultActiveKey="1"
-                items={items}
-                onChange={onChange}
-            />
-
+            <Access
+                permission={ALL_PERMISSIONS.JOBS.GET_PAGINATE}
+            >
+                <Tabs
+                    defaultActiveKey="1"
+                    items={items}
+                    onChange={onChange}
+                />
+            </Access>
         </div>
     );
 }

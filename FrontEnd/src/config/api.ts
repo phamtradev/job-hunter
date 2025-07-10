@@ -1,4 +1,4 @@
-import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, ISkill } from '@/types/backend';
+import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -170,5 +170,53 @@ export const callFetchResumeById = (id: string) => {
 }
 
 export const callFetchResumeByUser = () => {
-    return axios.post<IBackendRes<IResume>>(`/api/v1/resumes/by-user`);
+    return axios.post<IBackendRes<IModelPaginate<IResume>>>(`/api/v1/resumes/by-user`);
+}
+
+/**
+ * 
+Module Permission
+ */
+export const callCreatePermission = (permission: IPermission) => {
+    return axios.post<IBackendRes<IPermission>>('/api/v1/permissions', { ...permission })
+}
+
+export const callUpdatePermission = (permission: IPermission, id: string) => {
+    return axios.put<IBackendRes<IPermission>>(`/api/v1/permissions`, { id, ...permission })
+}
+
+export const callDeletePermission = (id: string) => {
+    return axios.delete<IBackendRes<IPermission>>(`/api/v1/permissions/${id}`);
+}
+
+export const callFetchPermission = (query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IPermission>>>(`/api/v1/permissions?${query}`);
+}
+
+export const callFetchPermissionById = (id: string) => {
+    return axios.get<IBackendRes<IPermission>>(`/api/v1/permissions/${id}`);
+}
+
+/**
+ * 
+Module Role
+ */
+export const callCreateRole = (role: IRole) => {
+    return axios.post<IBackendRes<IRole>>('/api/v1/roles', { ...role })
+}
+
+export const callUpdateRole = (role: IRole, id: string) => {
+    return axios.put<IBackendRes<IRole>>(`/api/v1/roles`, { id, ...role })
+}
+
+export const callDeleteRole = (id: string) => {
+    return axios.delete<IBackendRes<IRole>>(`/api/v1/roles/${id}`);
+}
+
+export const callFetchRole = (query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IRole>>>(`/api/v1/roles?${query}`);
+}
+
+export const callFetchRoleById = (id: string) => {
+    return axios.get<IBackendRes<IRole>>(`/api/v1/roles/${id}`);
 }

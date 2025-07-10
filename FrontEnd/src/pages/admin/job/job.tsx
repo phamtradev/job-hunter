@@ -10,6 +10,8 @@ import { callDeleteJob } from "@/config/api";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
 import { fetchJob } from "@/redux/slice/jobSlide";
+import Access from "@/components/share/access";
+import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfIn } from "spring-filter-query-builder";
 
 const JobPage = () => {
@@ -95,7 +97,7 @@ const JobPage = () => {
         },
         {
             title: 'Trạng thái',
-            dataIndex: 'isActive',
+            dataIndex: 'active',
             render(dom, entity, index, action, schema) {
                 return <>
                     <Tag color={entity.active ? "lime" : "red"} >
@@ -137,35 +139,44 @@ const JobPage = () => {
             width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
-                    <EditOutlined
-                        style={{
-                            fontSize: 20,
-                            color: '#ffa500',
-                        }}
-                        type=""
-                        onClick={() => {
-                            navigate(`/admin/job/upsert?id=${entity.id}`)
-                        }}
-                    />
-
-                    <Popconfirm
-                        placement="leftTop"
-                        title={"Xác nhận xóa job"}
-                        description={"Bạn có chắc chắn muốn xóa job này ?"}
-                        onConfirm={() => handleDeleteJob(entity.id)}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
+                    < Access
+                        permission={ALL_PERMISSIONS.JOBS.UPDATE}
+                        hideChildren
                     >
-                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                            <DeleteOutlined
-                                style={{
-                                    fontSize: 20,
-                                    color: '#ff4d4f',
-                                }}
-                            />
-                        </span>
-                    </Popconfirm>
-                </Space>
+                        <EditOutlined
+                            style={{
+                                fontSize: 20,
+                                color: '#ffa500',
+                            }}
+                            type=""
+                            onClick={() => {
+                                navigate(`/admin/job/upsert?id=${entity.id}`)
+                            }}
+                        />
+                    </Access >
+                    <Access
+                        permission={ALL_PERMISSIONS.JOBS.DELETE}
+                        hideChildren
+                    >
+                        <Popconfirm
+                            placement="leftTop"
+                            title={"Xác nhận xóa job"}
+                            description={"Bạn có chắc chắn muốn xóa job này ?"}
+                            onConfirm={() => handleDeleteJob(entity.id)}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                        >
+                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                <DeleteOutlined
+                                    style={{
+                                        fontSize: 20,
+                                        color: '#ff4d4f',
+                                    }}
+                                />
+                            </span>
+                        </Popconfirm>
+                    </Access>
+                </Space >
             ),
 
         },
@@ -182,6 +193,7 @@ const JobPage = () => {
         }
 
         clone.filter = parts.join(' and ');
+        if (!clone.filter) delete clone.filter;
 
         clone.page = clone.current;
         clone.size = clone.pageSize;
@@ -217,41 +229,45 @@ const JobPage = () => {
 
     return (
         <div>
-            <DataTable<IJob>
-                actionRef={tableRef}
-                headerTitle="Danh sách Jobs"
-                rowKey="id"
-                loading={isFetching}
-                columns={columns}
-                dataSource={jobs}
-                request={async (params, sort, filter): Promise<any> => {
-                    const query = buildQuery(params, sort, filter);
-                    dispatch(fetchJob({ query }))
-                }}
-                scroll={{ x: true }}
-                pagination={
-                    {
-                        current: meta.page,
-                        pageSize: meta.pageSize,
-                        showSizeChanger: true,
-                        total: meta.total,
-                        showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+            <Access
+                permission={ALL_PERMISSIONS.JOBS.GET_PAGINATE}
+            >
+                <DataTable<IJob>
+                    actionRef={tableRef}
+                    headerTitle="Danh sách Jobs"
+                    rowKey="id"
+                    loading={isFetching}
+                    columns={columns}
+                    dataSource={jobs}
+                    request={async (params, sort, filter): Promise<any> => {
+                        const query = buildQuery(params, sort, filter);
+                        dispatch(fetchJob({ query }))
+                    }}
+                    scroll={{ x: true }}
+                    pagination={
+                        {
+                            current: meta.page,
+                            pageSize: meta.pageSize,
+                            showSizeChanger: true,
+                            total: meta.total,
+                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                        }
                     }
-                }
-                rowSelection={false}
-                toolBarRender={(_action, _rows): any => {
-                    return (
-                        <Button
-                            icon={<PlusOutlined />}
-                            type="primary"
-                            onClick={() => navigate('upsert')}
-                        >
-                            Thêm mới
-                        </Button>
-                    );
-                }}
-            />
-        </div>
+                    rowSelection={false}
+                    toolBarRender={(_action, _rows): any => {
+                        return (
+                            <Button
+                                icon={<PlusOutlined />}
+                                type="primary"
+                                onClick={() => navigate('upsert')}
+                            >
+                                Thêm mới
+                            </Button>
+                        );
+                    }}
+                />
+            </Access>
+        </div >
     )
 }
 

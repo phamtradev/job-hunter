@@ -3,6 +3,7 @@ import { Mutex } from "async-mutex";
 import axiosClient from "axios";
 import { store } from "@/redux/store";
 import { setRefreshTokenAction } from "@/redux/slice/accountSlide";
+import { notification } from "antd";
 interface AccessTokenResponse {
     access_token: string;
 }
@@ -68,6 +69,13 @@ instance.interceptors.response.use(
             const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
             //dispatch redux action
             store.dispatch(setRefreshTokenAction({ status: true, message }));
+        }
+
+        if (+error.response.status === 403) {
+            notification.error({
+                message: error?.response?.data?.message ?? "",
+                description: error?.response?.data?.error ?? ""
+            })
         }
 
         return error?.response?.data ?? Promise.reject(error);
