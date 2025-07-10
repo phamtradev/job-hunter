@@ -46,7 +46,10 @@ public class PermissionController {
 
         //check exist by module, apiPath and method
         if (this.permissionService.isPermissionExist(permission)) {
-            throw new IdInvalidException("permission da ton tai");
+            //check name
+            if (this.permissionService.isSameName(permission)) {
+                throw new IdInvalidException("Permission da ton tai");
+            }
         }
 
         //update permission

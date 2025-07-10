@@ -3,17 +3,20 @@ package vn.phamtra.jobhunter.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.request.ReqLoginDTO;
 import vn.phamtra.jobhunter.domain.response.ResLoginDTO;
+import vn.phamtra.jobhunter.domain.response.User.ResCreateUserDTO;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
@@ -26,15 +29,17 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${phamtra.jwt.refresh-token-validity-in-seconds}") // thời gian hết hạn
     private long refreshTokenExpiration;
 
     public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
-                          UserService userService) {
+                          UserService userService, PasswordEncoder passwordEncoder) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/auth/login")
@@ -168,6 +173,21 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
                 .body(null);
+    }
+
+    @PostMapping("/auth/register")
+    @ApiMessage("register a new user")
+    public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User postManUser) throws IdInvalidException {
+        boolean isEmailExist = this.userService.isEmailExist(postManUser.getEmail());
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                    "Email " + postManUser.getEmail() + "đã tồn tại, vui lòng sử dụng email khác");
+        }
+        String hashPassword = this.passwordEncoder.encode(postManUser.getPassword()); //mã hóa password
+        postManUser.setPassword(hashPassword);
+        User phamtraUser = this.userService.handleCreateUser(postManUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(phamtraUser));
     }
 
 }

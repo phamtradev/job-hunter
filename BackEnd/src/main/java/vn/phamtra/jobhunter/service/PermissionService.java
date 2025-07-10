@@ -3,16 +3,13 @@ package vn.phamtra.jobhunter.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Permission;
-import vn.phamtra.jobhunter.domain.Resume;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
-import vn.phamtra.jobhunter.domain.response.Resume.ResFetchResumeDTO;
 import vn.phamtra.jobhunter.repository.PermissionRepository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PermissionService {
@@ -75,6 +72,15 @@ public class PermissionService {
 
         rs.setMeta(mt);
         return rs;
+    }
+
+    public boolean isSameName(Permission permission) {
+        Permission permissionDB = this.fetchById(permission.getId());
+        if (permissionDB != null) {
+            if (permissionDB.getName().equals(permission.getName()))
+                return true;
+        }
+        return false;
     }
 
 
