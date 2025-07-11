@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Job;
+import vn.phamtra.jobhunter.domain.Permission;
 import vn.phamtra.jobhunter.domain.Resume;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
@@ -84,19 +85,19 @@ public class ResumeService {
     }
 
     public ResultPaginationDTO fetchAllResume(Specification<Resume> spec, Pageable pageable) {
-        Page<Resume> pageUser = this.resumeRepository.findAll(spec, pageable);
+        Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
 
-        mt.setPages(pageUser.getTotalPages());
-        mt.setTotal(pageUser.getTotalElements());
+        mt.setPages(pageResume.getTotalPages());
+        mt.setTotal(pageResume.getTotalElements());
 
         rs.setMeta(mt);
 
-        List<ResFetchResumeDTO> listResume = pageUser.getContent().stream().map(item -> this.getResume(item)).collect(Collectors.toList());
+        List<ResFetchResumeDTO> listResume = pageResume.getContent().stream().map(item -> this.getResume(item)).collect(Collectors.toList());
         rs.setResult(listResume);
         return rs;
     }
@@ -160,6 +161,22 @@ public class ResumeService {
                 .map(item -> this.getResume(item))
                 .collect(Collectors.toList());
         rs.setResult(listResume);
+        return rs;
+    }
+
+    public ResultPaginationDTO fetchAllResumes(Specification<Resume> spec, Pageable pageable) {
+        Page<Resume> pageResumes = this.resumeRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageResumes.getTotalPages());
+        mt.setTotal(pageResumes.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pageResumes.getContent());
         return rs;
     }
 

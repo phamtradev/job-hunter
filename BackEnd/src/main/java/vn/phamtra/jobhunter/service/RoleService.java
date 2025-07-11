@@ -71,17 +71,18 @@ public class RoleService {
     }
 
     public ResultPaginationDTO fetchAllRoles(Specification<Role> spec, Pageable pageable) {
-        Page<Role> pageUser = this.roleRepository.findAll(spec, pageable);
+        Page<Role> pageRole = this.roleRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
 
-        mt.setPages(pageUser.getTotalPages());
-        mt.setTotal(pageUser.getTotalElements());
+        mt.setPages(pageRole.getTotalPages());
+        mt.setTotal(pageRole.getTotalElements());
 
         rs.setMeta(mt);
+        rs.setResult(pageRole.getContent());
         return rs;
     }
 }

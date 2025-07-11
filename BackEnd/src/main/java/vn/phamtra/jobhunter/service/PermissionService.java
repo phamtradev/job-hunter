@@ -3,7 +3,6 @@ package vn.phamtra.jobhunter.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Permission;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
@@ -60,17 +59,18 @@ public class PermissionService {
     }
 
     public ResultPaginationDTO fetchAllPermissions(Specification<Permission> spec, Pageable pageable) {
-        Page<Permission> pageUser = this.permissionRepository.findAll(spec, pageable);
+        Page<Permission> pagePermissions = this.permissionRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
 
-        mt.setPages(pageUser.getTotalPages());
-        mt.setTotal(pageUser.getTotalElements());
+        mt.setPages(pagePermissions.getTotalPages());
+        mt.setTotal(pagePermissions.getTotalElements());
 
         rs.setMeta(mt);
+        rs.setResult(pagePermissions.getContent());
         return rs;
     }
 
