@@ -73,5 +73,15 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
+    @ExceptionHandler(value = {
+            PermissionException.class
+    })
+    public ResponseEntity<RestRespone<Object>> handlePermissionException(Exception ex) {
+        RestRespone<Object> res = new RestRespone<Object>();
+        res.setStatusCode(HttpStatus.FORBIDDEN.value());
+        res.setError("404 Not Found. URL may not exist....");
+        res.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
+    }
 
 }

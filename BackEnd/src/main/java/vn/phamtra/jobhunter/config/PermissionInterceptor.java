@@ -11,6 +11,7 @@ import vn.phamtra.jobhunter.domain.Role;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.error.IdInvalidException;
+import vn.phamtra.jobhunter.util.error.PermissionException;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.util.List;
@@ -42,13 +43,13 @@ public class PermissionInterceptor implements HandlerInterceptor {
         // Lấy thông tin người dùng từ UserService
         User user = this.userService.handleGetUserByUsername(email);
         if (user == null) {
-            throw new IdInvalidException("Không tìm thấy thông tin người dùng.");
+            throw new PermissionException("Không tìm thấy thông tin người dùng.");
         }
 
         // Kiểm tra quyền của người dùng
         Role role = user.getRole();
         if (role == null || role.getPermissions() == null || role.getPermissions().isEmpty()) {
-            throw new IdInvalidException("Người dùng không có quyền truy cập trang này.");
+            throw new PermissionException("Người dùng không có quyền truy cập trang này.");
         }
 
         // Kiểm tra xem người dùng có quyền truy cập API hiện tại hay không
@@ -57,7 +58,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
         );
 
         if (!isAllowed) {
-            throw new IdInvalidException("Bạn không có quyền truy cập trang này.");
+            throw new PermissionException("Bạn không có quyền truy cập trang này.");
         }
 
         return true;
