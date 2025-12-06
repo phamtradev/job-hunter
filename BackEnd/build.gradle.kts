@@ -9,7 +9,8 @@ group = "vn.phamtra"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -37,4 +38,16 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    archiveFileName.set("spring-boot-docker.jar")
+}
+
+tasks.withType<JavaExec> {
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
 }

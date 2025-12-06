@@ -48,7 +48,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec, pageable));
     }
 
-    @PostMapping("/users")
+        @PostMapping("/users")
     @ApiMessage("create new user")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User postManUser) throws IdInvalidException {
         boolean isEmailExist = this.userService.isEmailExist(postManUser.getEmail());
