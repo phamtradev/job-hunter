@@ -11,6 +11,7 @@ services:
       - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./docker/mysql/seed:/docker-entrypoint-initdb.d   # <-- QUAN TRỌNG
     networks:
       - job-hunter-network
     healthcheck:
@@ -39,4 +40,3 @@ networks:
 
 volumes:
   mysql-data:
-
