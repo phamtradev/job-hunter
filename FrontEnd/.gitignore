@@ -16,7 +16,6 @@ dist-ssr
 
 # Editor directories and files
 .vscode/*
-index.html
 package.json
 !.vscode/extensions.json
 .idea
