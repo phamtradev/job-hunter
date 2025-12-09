@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         // VD: https://domain.com/uploads/company/xxx.png
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations(baseUri)
+        .addResourceLocations(baseUri.endsWith("/") ? baseUri : baseUri + "/")
                 .setCachePeriod(0);
     }
 }

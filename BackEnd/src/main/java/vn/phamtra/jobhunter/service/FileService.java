@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,63 +20,34 @@ public class FileService {
     @Value("${phamtra.upload-file.base-uri}")
     private String baseURI;
 
-    public void createDirectory(String folder) throws IOException {
-        // Normalize base URI: remove "file:" prefix
-        String basePath = baseURI.replace("file:", "").replace("file://", "");
-        if (basePath.endsWith("/")) {
-            basePath = basePath.substring(0, basePath.length() - 1);
-        }
-        
-        // Build full directory path
-        Path root = Paths.get(basePath).toAbsolutePath().normalize();
-        Path dirPath = root.resolve(folder).normalize();
-        
-        // Ensure directory is within root (security check)
-        if (!dirPath.startsWith(root)) {
-            throw new IOException("Invalid directory path: " + folder);
-        }
-        
-        // Create directory and all parent directories if they don't exist
-        if (!Files.exists(dirPath)) {
-            Files.createDirectories(dirPath);
-            System.out.println(">>> CREATE NEW DIRECTORY SUCCESSFUL, PATH = " + dirPath);
+    public void createDirectory(String folder) throws URISyntaxException {
+        URI uri = new URI(folder);
+        Path path = Paths.get(uri);
+        File tmpDir = new File(path.toString());
+        if (!tmpDir.isDirectory()) {
+            try {
+                Files.createDirectory(tmpDir.toPath());
+                System.out.println(">>> CREATE NEW DIRECTORY SUCCESSFUL, PATH = " + folder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
-            System.out.println(">>> SKIP MAKING DIRECTORY, ALREADY EXISTS: " + dirPath);
+            System.out.println(">>> SKIP MAKING DIRECTORY, ALREADY EXISTS");
         }
+
     }
 
-    public String store(MultipartFile file, String folder) throws IOException {
-        // Normalize base URI: remove "file:" prefix
-        String basePath = baseURI.replace("file:", "").replace("file://", "");
-        if (basePath.endsWith("/")) {
-            basePath = basePath.substring(0, basePath.length() - 1);
-        }
-        
-        // Create unique filename
+    public String store(MultipartFile file, String folder) throws URISyntaxException, IOException { //luu file vao folder
+        // create unique filename
         String finalName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-        
-        // Build full file path using Path (handles special characters correctly)
-        Path root = Paths.get(basePath).toAbsolutePath().normalize();
-        Path filePath = root.resolve(folder).resolve(finalName).normalize();
-        
-        // Ensure file is within root (security check)
-        if (!filePath.startsWith(root)) {
-            throw new IOException("Invalid file path: " + folder + "/" + finalName);
-        }
-        
-        // Ensure parent directory exists
-        Path parentDir = filePath.getParent();
-        if (!Files.exists(parentDir)) {
-            Files.createDirectories(parentDir);
-        }
-        
-        // Copy file
+
+        URI uri = new URI(baseURI + folder + "/" + finalName);
+        Path path = Paths.get(uri);
         try (InputStream inputStream = file.getInputStream()) {
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, path,
+                    StandardCopyOption.REPLACE_EXISTING);
         }
-        
-        System.out.println(">>> FILE STORED SUCCESSFULLY: " + filePath);
-        return finalName; // Return only filename, folder will be added in controller
+        return finalName;
     }
 
 }
