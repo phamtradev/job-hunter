@@ -3,6 +3,7 @@
 
 # Ignore IDE-specific files
 # IntelliJ IDEA
+.vscode/
 .idea/
 *.iml
 build/
