@@ -6,17 +6,20 @@ COPY gradlew settings.gradle.kts build.gradle.kts ./
 COPY gradle ./gradle
 COPY src ./src
 
-RUN chmod +x gradlew && ./gradlew bootJar -x test
+# Build JAR
+RUN chmod +x gradlew && ./gradlew bootJar -x test && cp build/libs/*.jar app.jar
+
 
 # Stage 2: Run
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Tạo folder upload
+# Create upload folder
 RUN mkdir -p /app/upload
 VOLUME /app/upload
 
-COPY --from=build /app/build/libs/*.jar app.jar
+# Copy built jar
+COPY --from=build /app/app.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
