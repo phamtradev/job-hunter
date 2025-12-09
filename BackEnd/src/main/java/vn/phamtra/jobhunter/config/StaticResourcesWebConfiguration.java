@@ -15,6 +15,7 @@ public class StaticResourcesWebConfiguration
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 registry.addResourceHandler("/storage/**")
-                        .addResourceLocations(baseURI);
+                        .addResourceLocations(baseURI)
+                        .setCachePeriod(3600); // Cache 1 hour
             }
 }

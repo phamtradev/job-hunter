@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults()) //cấu hình mặc định lỗi cors
                 .authorizeHttpRequests(
                         authz -> authz
+                                .requestMatchers("/storage/**").permitAll() // Ưu tiên static resources
                                 .requestMatchers(whiteList).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/companies").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/jobs").permitAll()
