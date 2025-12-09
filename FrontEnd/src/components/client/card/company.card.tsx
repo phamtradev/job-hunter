@@ -90,7 +90,7 @@ const CompanyCard = (props: IProps) => {
                                                 <img
                                                     style={{ maxWidth: "200px" }}
                                                     alt="example"
-                                                    src={`https://job-hunter-zdyy.onrender.com/storage/company/${item?.logo}`}
+                                                    src={`${import.meta.env.VITE_BACKEND_URL}${item?.logo}`}
                                                 />
                                             </div>
                                         }
