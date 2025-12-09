@@ -114,7 +114,7 @@ const JobCard = (props: IProps) => {
                                             <div className={styles["card-job-left"]}>
                                                 <img
                                                     alt="example"
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}/storage/company/${item?.company?.logo}`}
+                                                    src={`https://job-hunter-zdyy.onrender.com/storage/company/${item?.company?.logo}`}
                                                 />
                                             </div>
                                             <div className={styles["card-job-right"]}>

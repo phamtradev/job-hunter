@@ -85,7 +85,7 @@ const ClientJobDetailPage = (props: any) => {
                                         <img
                                             width={"200px"}
                                             alt="example"
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/storage/company/${jobDetail.company?.logo}`}
+                                            src={`https://job-hunter-zdyy.onrender.com/storage/company/${jobDetail.company?.logo}`}
                                         />
                                     </div>
                                     <div>
