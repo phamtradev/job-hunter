@@ -90,7 +90,7 @@ public class ResumeController {
         return ResponseEntity.ok().body(this.resumeService.updateResume(reqResume));
     }
 
-    @PostMapping("/resumes/by-user")
+    @PostMapping("resumes/by-user")
     @ApiMessage("Get list resumes by user")
     public ResponseEntity<ResultPaginationDTO> fetchResumeByUser(Pageable pageable) {
         return ResponseEntity.ok().body(this.resumeService.fetchResumeByUser(pageable));
@@ -112,13 +112,9 @@ public class ResumeController {
             }
         }
 
-        Specification<Resume> finalSpec = spec;
-        
-        // Only filter by jobIds if user has a company with jobs
-        if (arrJobIds != null && !arrJobIds.isEmpty()) {
-            Specification<Resume> jobInSpec = filterSpecificationConverter.convert(filterBuilder.field("job").in(filterBuilder.input(arrJobIds)).get());
-            finalSpec = jobInSpec.and(spec);
-        }
+        Specification<Resume> jobInSpec = filterSpecificationConverter.convert(filterBuilder.field("job").in(filterBuilder.input(arrJobIds)).get());
+
+        Specification<Resume> finalSpec = jobInSpec.and(spec);
 
         return ResponseEntity.ok().body(this.resumeService.fetchAllResume(finalSpec, pageable));
 

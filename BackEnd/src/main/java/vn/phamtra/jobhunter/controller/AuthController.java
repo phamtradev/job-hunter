@@ -14,10 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.phamtra.jobhunter.domain.User;
-import vn.phamtra.jobhunter.domain.request.ReqChangePasswordDTO;
 import vn.phamtra.jobhunter.domain.request.ReqLoginDTO;
 import vn.phamtra.jobhunter.domain.response.ResLoginDTO;
-import vn.phamtra.jobhunter.domain.response.User.ResChangePasswordDTO;
 import vn.phamtra.jobhunter.domain.response.User.ResCreateUserDTO;
 import vn.phamtra.jobhunter.service.UserService;
 import vn.phamtra.jobhunter.util.annotation.ApiMessage;
@@ -190,21 +188,6 @@ public class AuthController {
         User phamtraUser = this.userService.handleCreateUser(postManUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(phamtraUser));
-    }
-
-    @PostMapping("/auth/change-password")
-    @ApiMessage("Đổi mật khẩu thành công")
-    public ResponseEntity<ResChangePasswordDTO> changePassword(@Valid @RequestBody ReqChangePasswordDTO reqChangePasswordDTO) throws IdInvalidException {
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-        
-        if (email.isEmpty()) {
-            throw new IdInvalidException("Người dùng chưa đăng nhập");
-        }
-
-        this.userService.changePassword(email, reqChangePasswordDTO.getOldPassword(), 
-                                       reqChangePasswordDTO.getNewPassword(), this.passwordEncoder);
-
-        return ResponseEntity.ok(new ResChangePasswordDTO());
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Job;
+import vn.phamtra.jobhunter.domain.Permission;
 import vn.phamtra.jobhunter.domain.Resume;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
@@ -22,6 +23,7 @@ import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Filter;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,12 +117,10 @@ public class ResumeService {
 
         if (resume.getJob() != null) { //neu cv co cong viec thuoc job
             res.setCompanyName(resume.getJob().getCompany().getName()); //lay ten cong ty
-            res.setJob(new ResFetchResumeDTO.JobResume(resume.getJob().getId(), resume.getJob().getName()));
         }
 
-        if (resume.getUser() != null) {
-            res.setUser(new ResFetchResumeDTO.UserResume(resume.getUser().getId(), resume.getUser().getName()));
-        }
+        res.setUser(new ResFetchResumeDTO.UserResume(resume.getUser().getId(), resume.getUser().getName()));
+        res.setJob(new ResFetchResumeDTO.JobResume(resume.getJob().getId(), resume.getJob().getName()));
 
         return res;
     }

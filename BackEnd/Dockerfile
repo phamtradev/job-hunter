@@ -10,8 +10,8 @@ COPY gradle ./gradle
 # Copy source code
 COPY src ./src
 
-# Build the application
-RUN ./gradlew bootJar --no-daemon
+# Build the WAR file
+RUN ./gradlew bootWar --no-daemon
 
 # Stage 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
@@ -21,17 +21,11 @@ WORKDIR /app
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 
-# Copy the JAR from build stage
-COPY --from=build /app/build/libs/*.jar app.jar
+# Copy the WAR from build stage
+COPY --from=build /app/build/libs/jobhunter.war jobhunter.war
 
-# Expose port (Render will use PORT env variable)
+# Expose port
 EXPOSE 8080
 
-# Health check (Render will handle this via healthCheckPath)
-# HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-#   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
-
 # Run the application
-# Render uses PORT environment variable
-# Also set Spring profile to prod
-ENTRYPOINT ["sh", "-c", "java -jar -Dserver.port=${PORT:-8080} -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-prod} app.jar"]
+ENTRYPOINT ["java", "-jar", "jobhunter.war"]

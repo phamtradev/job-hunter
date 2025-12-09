@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Company;
 import vn.phamtra.jobhunter.domain.Role;
@@ -14,7 +13,6 @@ import vn.phamtra.jobhunter.domain.response.User.ResUpdateUserDTO;
 import vn.phamtra.jobhunter.domain.response.User.ResUserDTO;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.UserRepository;
-import vn.phamtra.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -192,22 +190,5 @@ public class UserService {
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
-    }
-
-    public void changePassword(String email, String oldPassword, String newPassword, PasswordEncoder passwordEncoder) throws IdInvalidException {
-        User currentUser = this.handleGetUserByUsername(email);
-        if (currentUser == null) {
-            throw new IdInvalidException("Người dùng không tồn tại");
-        }
-
-        // Kiểm tra mật khẩu cũ có đúng không
-        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
-            throw new IdInvalidException("Mật khẩu cũ không đúng");
-        }
-
-        // Mã hóa mật khẩu mới và cập nhật
-        String hashNewPassword = passwordEncoder.encode(newPassword);
-        currentUser.setPassword(hashNewPassword);
-        this.userRepository.save(currentUser);
     }
 }
