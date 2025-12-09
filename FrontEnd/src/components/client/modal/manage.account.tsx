@@ -114,7 +114,7 @@ const UserUpdateInfo = (props: any) => {
     const onFinish = async (values: any) => {
         const { id, name, age, gender, address } = values;
         setIsSubmit(true);
-        
+
         const res = await callUpdateUserInfo(id, name, +age, gender, address);
         if (res && res.data) {
             message.success("Cập nhật thông tin thành công");
@@ -237,7 +237,7 @@ const UserChangePassword = (props: any) => {
     const onFinish = async (values: any) => {
         const { oldPassword, newPassword } = values;
         setIsSubmit(true);
-        
+
         const res = await callChangePassword(oldPassword, newPassword);
         if (res && res.data) {
             message.success("Thay đổi mật khẩu thành công");
