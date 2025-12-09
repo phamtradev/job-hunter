@@ -1,6 +1,5 @@
 plugins {
     java
-    war
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
     id("io.freefair.lombok") version "8.14"
@@ -35,30 +34,15 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    // H2 database for testing
-    testRuntimeOnly("com.h2database:h2")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    // Skip tests when building (uncomment to enable tests)
-    // To run tests: ./gradlew test
-    // To build without tests: ./gradlew build -x test
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     archiveFileName.set("spring-boot-docker.jar")
 }
-
-// Configure WAR packaging
-tasks.named<org.springframework.boot.gradle.tasks.bundling.BootWar>("bootWar") {
-    archiveFileName.set("jobhunter.war")
-}
-
-// Enable both JAR and WAR (comment out bootJar if you only want WAR)
-// tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
-//     enabled = false
-// }
 
 tasks.withType<JavaExec> {
     jvmArgs("--enable-native-access=ALL-UNNAMED")

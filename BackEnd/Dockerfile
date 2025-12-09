@@ -1,19 +1,22 @@
-# Stage 1 - Build
+# Stage 1: Build
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
 
-COPY . .
+COPY gradlew settings.gradle.kts build.gradle.kts ./
+COPY gradle ./gradle
+COPY src ./src
 
-# Build only the WAR (bootWar). Tests skipped for faster image build.
-RUN chmod +x gradlew
-RUN ./gradlew bootWar -x test --no-daemon
+RUN chmod +x gradlew && ./gradlew bootJar -x test
 
-# Stage 2 - Run
+# Stage 2: Run
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Copy the built WAR
-COPY --from=build /app/build/libs/jobhunter.war app.war
+# Tạo folder upload
+RUN mkdir -p /app/upload
+VOLUME /app/upload
+
+COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.war"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
