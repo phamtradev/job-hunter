@@ -1,11 +1,13 @@
-import { Modal, Table, Tabs } from "antd";
+import { Modal, Table, Tabs, Form, Input, Select, Row, Col, message, notification } from "antd";
 import { isMobile } from "react-device-detect";
 import type { TabsProps } from 'antd';
 import { IResume } from "@/types/backend";
 import { useState, useEffect } from 'react';
-import { callFetchResumeByUser } from "@/config/api";
+import { callFetchResumeByUser, callUpdateUserInfo } from "@/config/api";
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { fetchAccount } from '@/redux/slice/accountSlide';
 
 interface IProps {
     open: boolean;
@@ -91,9 +93,139 @@ const UserResume = (props: any) => {
 }
 
 const UserUpdateInfo = (props: any) => {
+    const [form] = Form.useForm();
+    const user = useAppSelector(state => state.account.user);
+    const dispatch = useAppDispatch();
+    const [isSubmit, setIsSubmit] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (user) {
+            form.setFieldsValue({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                age: user.age,
+                gender: user.gender,
+                address: user.address
+            });
+        }
+    }, [user]);
+
+    const onFinish = async (values: any) => {
+        const { id, name, age, gender, address } = values;
+        setIsSubmit(true);
+        
+        const res = await callUpdateUserInfo(id, name, +age, gender, address);
+        if (res && res.data) {
+            message.success("Cập nhật thông tin thành công");
+            dispatch(fetchAccount());
+        } else {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: res.message
+            });
+        }
+        setIsSubmit(false);
+    };
+
     return (
         <div>
-            //todo
+            <Form
+                form={form}
+                layout="vertical"
+                onFinish={onFinish}
+            >
+                <Form.Item
+                    hidden
+                    name="id"
+                >
+                    <Input />
+                </Form.Item>
+
+                <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item
+                            label="Email"
+                            name="email"
+                        >
+                            <Input disabled />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item
+                            label="Tên hiển thị"
+                            name="name"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập tên!' },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item
+                            label="Tuổi"
+                            name="age"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập tuổi!' },
+                            ]}
+                        >
+                            <Input type="number" />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item
+                            label="Giới tính"
+                            name="gender"
+                            rules={[
+                                { required: true, message: 'Vui lòng chọn giới tính!' },
+                            ]}
+                        >
+                            <Select
+                                placeholder="Chọn giới tính"
+                                options={[
+                                    { label: 'Nam', value: 'MALE' },
+                                    { label: 'Nữ', value: 'FEMALE' },
+                                    { label: 'Khác', value: 'OTHER' },
+                                ]}
+                            />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item
+                            label="Địa chỉ"
+                            name="address"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập địa chỉ!' },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                        <button
+                            type="submit"
+                            style={{
+                                padding: '8px 24px',
+                                backgroundColor: '#1890ff',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: isSubmit ? 'not-allowed' : 'pointer',
+                                opacity: isSubmit ? 0.6 : 1
+                            }}
+                            disabled={isSubmit}
+                        >
+                            {isSubmit ? 'Đang cập nhật...' : 'Cập nhật'}
+                        </button>
+                    </Col>
+                </Row>
+            </Form>
         </div>
     )
 }

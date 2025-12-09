@@ -112,6 +112,10 @@ export const callFetchUser = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IUser>>>(`/api/v1/users?${query}`);
 }
 
+export const callUpdateUserInfo = (id: string, name: string, age: number, gender: string, address: string) => {
+    return axios.put<IBackendRes<IUser>>(`/api/v1/users`, { id, name, age, gender, address });
+}
+
 /**
  * 
 Module Job
