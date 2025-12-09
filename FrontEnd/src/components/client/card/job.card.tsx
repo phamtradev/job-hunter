@@ -114,7 +114,7 @@ const JobCard = (props: IProps) => {
                                             <div className={styles["card-job-left"]}>
                                                 <img
                                                     alt="example"
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}${item?.company?.logo}`}
+                                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/company/${item?.company?.logo}`}
                                                 />
                                             </div>
                                             <div className={styles["card-job-right"]}>

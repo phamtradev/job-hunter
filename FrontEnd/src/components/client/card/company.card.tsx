@@ -90,7 +90,7 @@ const CompanyCard = (props: IProps) => {
                                                 <img
                                                     style={{ maxWidth: "200px" }}
                                                     alt="example"
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}${item?.logo}`}
+                                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/company/${item?.logo}`}
                                                 />
                                             </div>
                                         }
