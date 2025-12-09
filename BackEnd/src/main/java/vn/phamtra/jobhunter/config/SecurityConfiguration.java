@@ -45,7 +45,8 @@ public class SecurityConfiguration {
         String[] whiteList = {
             "/",
             "/api/v1/auth/login", "/api/v1/auth/refresh", "api/v1/auth/register",
-            "/storage/**"
+            "/storage/**",
+            "/api/v1/files"
     };
 
         http
@@ -54,6 +55,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers(whiteList).permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/files").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/companies").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/jobs").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/skills").permitAll()
