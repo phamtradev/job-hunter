@@ -1,23 +1,17 @@
-# Stage 1: Build the Spring Boot WAR
+# Stage 1: Build the Spring Boot app
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
 
-# Copy Gradle wrapper and build files first (better layer caching)
-COPY gradlew settings.gradle.kts build.gradle.kts ./
-COPY gradle ./gradle
+COPY . .
 
-# Copy source code
-COPY src ./src
+RUN chmod +x gradlew
+RUN ./gradlew clean build -x test
 
-# Make wrapper executable and build WAR (skip tests for faster CI)
-RUN chmod +x gradlew && ./gradlew bootWar -x test --no-daemon
-
-# Stage 2: Runtime image
+# Stage 2: Run
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Copy the built WAR (name is set in build.gradle.kts as jobhunter.war)
-COPY --from=build /app/build/libs/jobhunter.war app.war
+COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.war"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
