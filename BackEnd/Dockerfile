@@ -4,15 +4,16 @@ WORKDIR /app
 
 COPY . .
 
+# Build only the WAR (bootWar). Tests skipped for faster image build.
 RUN chmod +x gradlew
-RUN ./gradlew clean build -x test
+RUN ./gradlew bootWar -x test --no-daemon
 
 # Stage 2 - Run
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Copy đúng file output mà bạn có!
-COPY --from=build /app/build/libs/spring-boot-docker.jar app.jar
+# Copy the built WAR
+COPY --from=build /app/build/libs/jobhunter.war app.war
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.war"]
