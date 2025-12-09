@@ -53,6 +53,7 @@ public class SecurityConfiguration {
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults()) //cấu hình mặc định lỗi cors
+                .securityMatcher("/api/**") // Chỉ áp dụng security cho API endpoints, không áp dụng cho /uploads/** và /storage/**
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers(whiteList).permitAll()
@@ -60,8 +61,6 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/companies").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/jobs").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/skills").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
-                                
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenicationEntryPoint)

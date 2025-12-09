@@ -47,9 +47,10 @@ public class FileController {
         this.fileService.createDirectory(folder);
 
         //store file
-        String uploadFile = this.fileService.store(file, folder);
+        String fileName = this.fileService.store(file, folder);
 
-        String publicUrl = "/uploads/" + folder + "/" + uploadFile;
+        // Build public URL: /uploads/folder/filename
+        String publicUrl = "/uploads/" + folder + "/" + fileName;
 
         ResUploadFileDTO res = new ResUploadFileDTO(publicUrl, Instant.now());
 

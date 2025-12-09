@@ -73,8 +73,7 @@ public class FileService {
         }
         
         System.out.println(">>> FILE STORED SUCCESSFULLY: " + filePath);
-        return folder + "/" + finalName;
-
+        return finalName; // Return only filename, folder will be added in controller
     }
 
 }
