@@ -73,7 +73,8 @@ public class FileService {
         }
         
         System.out.println(">>> FILE STORED SUCCESSFULLY: " + filePath);
-        return finalName;
+        return folder + "/" + finalName;
+
     }
 
 }

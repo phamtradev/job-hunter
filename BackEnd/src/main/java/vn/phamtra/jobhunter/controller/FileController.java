@@ -49,7 +49,10 @@ public class FileController {
         //store file
         String uploadFile = this.fileService.store(file, folder);
 
-        ResUploadFileDTO res = new ResUploadFileDTO(uploadFile, Instant.now());
+        String publicUrl = "/uploads/" + folder + "/" + uploadFile;
+
+        ResUploadFileDTO res = new ResUploadFileDTO(publicUrl, Instant.now());
+
 
         return ResponseEntity.ok().body(res);
     }
