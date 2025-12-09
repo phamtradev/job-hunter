@@ -1,31 +1,21 @@
-# Multi-stage build for Spring Boot application
-# Stage 1: Build
-FROM gradle:8.5-jdk21-alpine AS build
+# Stage 1: Build the Spring Boot application
+FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /app
 
-# Copy Gradle files
-COPY build.gradle.kts settings.gradle.kts gradlew ./
-COPY gradle ./gradle
+# Copy entire source code
+COPY . .
 
-# Copy source code
-COPY src ./src
+# Give permission to gradlew
+RUN chmod +x ./gradlew
 
-# Build the WAR file
-RUN ./gradlew bootWar --no-daemon
+# Build project without running tests
+RUN ./gradlew clean build -x test
 
-# Stage 2: Runtime
+# Stage 2: Run the built JAR
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Create non-root user for security
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+COPY --from=builder /app/build/libs/*.jar app.jar
 
-# Copy the WAR from build stage
-COPY --from=build /app/build/libs/jobhunter.war jobhunter.war
-
-# Expose port
 EXPOSE 8080
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "jobhunter.war"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
