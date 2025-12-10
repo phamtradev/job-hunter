@@ -55,6 +55,32 @@ public class FileService {
         }
     }
 
+    /**
+     * Check if filename already has a timestamp prefix (format: {timestamp}-{name})
+     * Timestamp is typically 13 digits (milliseconds since epoch)
+     */
+    private boolean hasTimestampPrefix(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return false;
+        }
+        // Check if filename starts with digits followed by a hyphen
+        // Pattern: 13 digits (timestamp) + "-" + rest of filename
+        int firstHyphenIndex = fileName.indexOf('-');
+        if (firstHyphenIndex > 0 && firstHyphenIndex <= 15) { // Timestamp is usually 13 digits
+            String prefix = fileName.substring(0, firstHyphenIndex);
+            // Check if prefix is all digits and has reasonable length (10-15 digits)
+            if (prefix.matches("\\d{10,15}")) {
+                try {
+                    Long.parseLong(prefix); // Valid timestamp
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     public String store(MultipartFile file, String folder) throws IOException {
         try {
            
@@ -68,7 +94,18 @@ public class FileService {
             if (originalFileName == null || originalFileName.isEmpty()) {
                 throw new IOException("File name is empty");
             }
-            String finalName = System.currentTimeMillis() + "-" + originalFileName;
+            
+            // Only add timestamp if filename doesn't already have one
+            String finalName;
+            if (hasTimestampPrefix(originalFileName)) {
+                // Filename already has timestamp, use as is
+                finalName = originalFileName;
+                System.out.println(">>> FileService.store - Filename already has timestamp, using as is: " + finalName);
+            } else {
+                // Add timestamp prefix to ensure uniqueness
+                finalName = System.currentTimeMillis() + "-" + originalFileName;
+                System.out.println(">>> FileService.store - Added timestamp prefix: " + finalName);
+            }
             
             System.out.println(">>> FileService.store - Base path: " + basePath);
             System.out.println(">>> FileService.store - Folder: " + folder);
