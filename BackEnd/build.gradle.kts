@@ -29,6 +29,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("com.turkraft.springfilter:jpa:3.1.7")
+    implementation("com.cloudinary:cloudinary-http44:1.33.0")
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     //runtimeOnly("com.mysql:mysql-connector-java")
     implementation("mysql:mysql-connector-java:8.0.33")
