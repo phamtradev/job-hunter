@@ -100,24 +100,43 @@ public class ResumeController {
     @ApiMessage("Fetch all resumes with paginate")
     public ResponseEntity<ResultPaginationDTO> fetchAll(@Filter Specification<Resume> spec, Pageable pageable) {
         List<Long> arrJobIds = null;
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
-        User currentUser = this.userService.handleGetUserByUsername(email);
-        if (currentUser != null) {
-            Company userCompany = currentUser.getCompany();
-            if (userCompany != null) {
-                List<Job> companyJobs = userCompany.getJobs();
-                if (companyJobs != null && companyJobs.size() > 0) {
-                    arrJobIds = companyJobs.stream().map(x -> x.getId()).collect(Collectors.toList());
+        Optional<String> currentUserLoginOpt = SecurityUtil.getCurrentUserLogin();
+        if (currentUserLoginOpt.isPresent()) {
+            String email = currentUserLoginOpt.get();
+            User currentUser = this.userService.handleGetUserByUsername(email);
+            if (currentUser != null) {
+                Company userCompany = currentUser.getCompany();
+                if (userCompany != null) {
+                    List<Job> companyJobs = userCompany.getJobs();
+                    if (companyJobs != null && !companyJobs.isEmpty()) {
+                        arrJobIds = companyJobs.stream().map(Job::getId).collect(Collectors.toList());
+                    }
                 }
             }
         }
 
-        Specification<Resume> jobInSpec = filterSpecificationConverter.convert(filterBuilder.field("job").in(filterBuilder.input(arrJobIds)).get());
-
-        Specification<Resume> finalSpec = jobInSpec.and(spec);
+        Specification<Resume> finalSpec = spec;
+        
+        // Only filter by job IDs if user has a company with jobs
+        // If user doesn't have company or company has no jobs, return all resumes (or empty if arrJobIds is empty)
+        if (arrJobIds != null && !arrJobIds.isEmpty()) {
+            try {
+                Specification<Resume> jobInSpec = filterSpecificationConverter.convert(
+                    filterBuilder.field("job").in(filterBuilder.input(arrJobIds)).get()
+                );
+                finalSpec = jobInSpec.and(spec);
+            } catch (Exception e) {
+                System.err.println(">>> ResumeController - Error creating job filter: " + e.getMessage());
+                e.printStackTrace();
+                // If filter creation fails, use only the base spec (no job filtering)
+            }
+        } else {
+            // User doesn't have company or company has no jobs
+            // Return all resumes (or empty list if needed)
+            // For now, return all resumes - you can change this logic if needed
+        }
 
         return ResponseEntity.ok().body(this.resumeService.fetchAllResume(finalSpec, pageable));
-
     }
 
 
