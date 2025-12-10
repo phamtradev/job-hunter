@@ -14,7 +14,7 @@ WORKDIR /app
 
 # Tạo folder upload
 RUN mkdir -p /app/upload
-VOLUME /app/upload
+
 
 COPY --from=build /app/build/libs/*.jar app.jar
 

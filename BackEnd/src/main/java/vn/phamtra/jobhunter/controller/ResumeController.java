@@ -110,33 +110,49 @@ public class ResumeController {
                     List<Job> companyJobs = userCompany.getJobs();
                     if (companyJobs != null && !companyJobs.isEmpty()) {
                         arrJobIds = companyJobs.stream().map(Job::getId).collect(Collectors.toList());
+                        System.out.println(">>> ResumeController - User has company with " + arrJobIds.size() + " jobs: " + arrJobIds);
+                    } else {
+                        System.out.println(">>> ResumeController - User has company but no jobs");
                     }
+                } else {
+                    System.out.println(">>> ResumeController - User has no company");
                 }
+            } else {
+                System.out.println(">>> ResumeController - User not found for email: " + email);
             }
+        } else {
+            System.out.println(">>> ResumeController - No current user login");
         }
 
-        Specification<Resume> finalSpec = spec;
+        // Start with base spec (from @Filter annotation, can be null)
+        Specification<Resume> finalSpec = spec != null ? spec : (root, query, cb) -> cb.conjunction(); // Empty spec = always true
         
         // Only filter by job IDs if user has a company with jobs
-        // If user doesn't have company or company has no jobs, return all resumes (or empty if arrJobIds is empty)
+        // If user has company with jobs, only show resumes for those jobs
+        // If user doesn't have company or company has no jobs, show all resumes
         if (arrJobIds != null && !arrJobIds.isEmpty()) {
             try {
                 Specification<Resume> jobInSpec = filterSpecificationConverter.convert(
                     filterBuilder.field("job").in(filterBuilder.input(arrJobIds)).get()
                 );
-                finalSpec = jobInSpec.and(spec);
+                finalSpec = finalSpec.and(jobInSpec);
+                System.out.println(">>> ResumeController - Applied job filter with " + arrJobIds.size() + " job IDs");
             } catch (Exception e) {
                 System.err.println(">>> ResumeController - Error creating job filter: " + e.getMessage());
                 e.printStackTrace();
-                // If filter creation fails, use only the base spec (no job filtering)
+                // If filter creation fails, continue with base spec (no job filtering)
             }
         } else {
-            // User doesn't have company or company has no jobs
-            // Return all resumes (or empty list if needed)
-            // For now, return all resumes - you can change this logic if needed
+            System.out.println(">>> ResumeController - No job filter applied (showing all resumes)");
         }
 
-        return ResponseEntity.ok().body(this.resumeService.fetchAllResume(finalSpec, pageable));
+        ResultPaginationDTO result = this.resumeService.fetchAllResume(finalSpec, pageable);
+        int resultSize = 0;
+        if (result.getResult() != null && result.getResult() instanceof List) {
+            resultSize = ((List<?>) result.getResult()).size();
+        }
+        System.out.println(">>> ResumeController - Returning " + resultSize + " resumes");
+        return ResponseEntity.ok().body(result);
     }
 
 
