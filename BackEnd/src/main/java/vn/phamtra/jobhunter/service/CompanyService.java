@@ -9,6 +9,7 @@ import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
 import vn.phamtra.jobhunter.repository.CompanyRepository;
 import vn.phamtra.jobhunter.repository.UserRepository;
+import vn.phamtra.jobhunter.util.FileUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,11 @@ public class CompanyService {
 
 
     public Company handleCreateCompany(Company company) {
+        // Normalize logo filename (remove folder prefix if present)
+        if (company.getLogo() != null && !company.getLogo().isEmpty()) {
+            String normalizedLogo = FileUtil.normalizeFileName(company.getLogo());
+            company.setLogo(normalizedLogo);
+        }
         return this.companyRepository.save(company);
     }
 
@@ -63,7 +69,14 @@ public class CompanyService {
             currentCompany.setName(reqCompany.getName());
             currentCompany.setDescription(reqCompany.getDescription());
             currentCompany.setAddress(reqCompany.getAddress());
-            currentCompany.setLogo(reqCompany.getLogo());
+            
+            // Normalize logo filename (remove folder prefix if present)
+            if (reqCompany.getLogo() != null && !reqCompany.getLogo().isEmpty()) {
+                String normalizedLogo = FileUtil.normalizeFileName(reqCompany.getLogo());
+                currentCompany.setLogo(normalizedLogo);
+            } else {
+                currentCompany.setLogo(reqCompany.getLogo());
+            }
 
             //updayte
             currentCompany = this.companyRepository.save(currentCompany);

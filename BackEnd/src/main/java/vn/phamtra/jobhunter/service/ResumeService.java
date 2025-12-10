@@ -18,8 +18,8 @@ import vn.phamtra.jobhunter.domain.response.Resume.ResUpdateResumeDTO;
 import vn.phamtra.jobhunter.repository.JobRepository;
 import vn.phamtra.jobhunter.repository.ResumeRepository;
 import vn.phamtra.jobhunter.repository.UserRepository;
-import vn.phamtra.jobhunter.util.error.SecurityUtil;
 import vn.phamtra.jobhunter.util.FileUtil;
+import vn.phamtra.jobhunter.util.error.SecurityUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +63,12 @@ public class ResumeService {
     }
 
     public ResCreateResumeDTO handleCreateResume(Resume resume) {
+        // Normalize URL filename (remove folder prefix if present)
+        if (resume.getUrl() != null && !resume.getUrl().isEmpty()) {
+            String normalizedUrl = FileUtil.normalizeFileName(resume.getUrl());
+            resume.setUrl(normalizedUrl);
+        }
+        
         resume.handleBeforeCreate();
 
         resume = this.resumeRepository.save(resume);
@@ -107,8 +113,7 @@ public class ResumeService {
 
         res.setId(resume.getId());
         res.setEmail(resume.getEmail());
-        // Normalize URL to extract only filename (avoid duplicate folder in frontend)
-        res.setUrl(FileUtil.extractFilename(resume.getUrl()));
+        res.setUrl(resume.getUrl());
         res.setStatus(resume.getStatus());
         res.setCreatedAt(resume.getCreatedAt());
         res.setCreatedBy(resume.getCreatedBy());

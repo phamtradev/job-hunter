@@ -1,67 +1,45 @@
 package vn.phamtra.jobhunter.util;
 
 /**
- * Utility class for file path/URL normalization
+ * Utility class for file operations
  */
 public class FileUtil {
 
     /**
-     * Extract only filename from path/URL
+     * Normalize filename by removing folder prefix if present.
      * Examples:
-     * - "/uploads/company/1716687538974-amzon.jpg" -> "1716687538974-amzon.jpg"
      * - "company/1716687538974-amzon.jpg" -> "1716687538974-amzon.jpg"
-     * - "1716687538974-amzon.jpg" -> "1716687538974-amzon.jpg"
+     * - "resume/123-cv.pdf" -> "123-cv.pdf"
+     * - "1716687538974-amzon.jpg" -> "1716687538974-amzon.jpg" (no change)
      * 
-     * @param pathOrUrl The file path or URL (can be null or empty)
-     * @return Only the filename, or null if input is null/empty
+     * @param fileName The filename that may contain folder prefix
+     * @return Only the filename without folder prefix
      */
-    public static String extractFilename(String pathOrUrl) {
-        if (pathOrUrl == null || pathOrUrl.trim().isEmpty()) {
-            return null;
-        }
-        
-        // Remove leading/trailing slashes and whitespace
-        String normalized = pathOrUrl.trim();
-        
-        // Remove protocol and domain if present (http://, https://, file://)
-        if (normalized.contains("://")) {
-            int protocolEnd = normalized.indexOf("://") + 3;
-            int pathStart = normalized.indexOf("/", protocolEnd);
-            if (pathStart > 0) {
-                normalized = normalized.substring(pathStart);
-            }
+    public static String normalizeFileName(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return fileName;
         }
         
         // Remove leading slashes
-        while (normalized.startsWith("/")) {
-            normalized = normalized.substring(1);
+        fileName = fileName.trim();
+        if (fileName.startsWith("/")) {
+            fileName = fileName.substring(1);
         }
         
-        // Remove common prefixes
-        if (normalized.startsWith("uploads/")) {
-            normalized = normalized.substring("uploads/".length());
-        }
-        if (normalized.startsWith("storage/")) {
-            normalized = normalized.substring("storage/".length());
-        }
-        
-        // Extract filename (last part after last slash)
-        int lastSlash = normalized.lastIndexOf("/");
-        if (lastSlash >= 0 && lastSlash < normalized.length() - 1) {
-            normalized = normalized.substring(lastSlash + 1);
-        }
-        
-        // Remove folder prefix if still present (e.g., "company/filename.jpg" -> "filename.jpg")
-        // But only if it looks like a folder (common folder names)
-        String[] commonFolders = {"company", "resume", "user", "avatar", "logo"};
-        for (String folder : commonFolders) {
-            if (normalized.startsWith(folder + "/")) {
-                normalized = normalized.substring(folder.length() + 1);
-                break;
+        // Remove folder prefix (e.g., "company/", "resume/", etc.)
+        // Only remove if there's exactly one slash (folder/filename pattern)
+        int lastSlashIndex = fileName.lastIndexOf('/');
+        if (lastSlashIndex > 0 && lastSlashIndex < fileName.length() - 1) {
+            // Check if it's a folder/filename pattern (not a path with multiple slashes)
+            String beforeSlash = fileName.substring(0, lastSlashIndex);
+            if (!beforeSlash.contains("/")) {
+                // It's a simple folder/filename pattern, extract only filename
+                return fileName.substring(lastSlashIndex + 1);
             }
         }
         
-        return normalized.isEmpty() ? null : normalized;
+        // If it's already just a filename or has multiple slashes, return as is
+        return fileName;
     }
 }
 
