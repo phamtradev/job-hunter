@@ -21,7 +21,7 @@ A comprehensive job hunting platform backend built with Spring Boot, providing R
 - **TypeScript** - Type-safe JavaScript
 - **Tailwind CSS** - Utility-first CSS framework
 
-### Frontend Stack
+### Devops Stack
 - **Docker**, **Docker Compose**
 
 ## Features
