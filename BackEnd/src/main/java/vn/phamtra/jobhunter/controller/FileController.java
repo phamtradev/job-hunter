@@ -56,12 +56,13 @@ public class FileController {
             //store file
             String storedFileName = this.fileService.store(file, folder);
 
-            // Build public URL: /uploads/folder/filename
-            String publicUrl = "/uploads/" + folder + "/" + storedFileName;
+            // Return relative path: folder/filename (frontend will add /uploads/ prefix)
+            // This avoids duplicate /uploads/ if frontend already adds it
+            String relativePath = folder + "/" + storedFileName;
 
-            System.out.println(">>> FileController - File uploaded successfully. Public URL: " + publicUrl);
+            System.out.println(">>> FileController - File uploaded successfully. Relative path: " + relativePath);
 
-            ResUploadFileDTO res = new ResUploadFileDTO(publicUrl, Instant.now());
+            ResUploadFileDTO res = new ResUploadFileDTO(relativePath, Instant.now());
             return ResponseEntity.ok().body(res);
         } catch (StorageException e) {
             System.err.println(">>> FileController - StorageException: " + e.getMessage());
