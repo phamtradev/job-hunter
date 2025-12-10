@@ -3,6 +3,7 @@ import { setRefreshTokenAction } from "@/redux/slice/accountSlide";
 import { message } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SnowOverlay from "./snow";
 
 interface IProps {
     children: React.ReactNode
@@ -26,6 +27,7 @@ const LayoutApp = (props: IProps) => {
 
     return (
         <>
+            <SnowOverlay />
             {props.children}
         </>
     )

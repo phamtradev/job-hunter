@@ -4,8 +4,8 @@ import { callLogin } from 'config/api';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '@/redux/slice/accountSlide';
-import styles from 'styles/auth.module.scss';
 import { useAppSelector } from '@/redux/hooks';
+import { LockOutlined, MailOutlined, ArrowRightOutlined } from '@ant-design/icons';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -48,56 +48,66 @@ const LoginPage = () => {
 
 
     return (
-        <div className={styles["login-page"]}>
-            <main className={styles.main}>
-                <div className={styles.container}>
-                    <section className={styles.wrapper}>
-                        <div className={styles.heading}>
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}>Đăng Nhập</h2>
-                            <Divider />
-
-                        </div>
-                        <Form
-                            name="basic"
-                            // style={{ maxWidth: 600, margin: '0 auto' }}
-                            onFinish={onFinish}
-                            autoComplete="off"
-                        >
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Email"
-                                name="username"
-                                rules={[{ required: true, message: 'Email không được để trống!' }]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Mật khẩu"
-                                name="password"
-                                rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
-                            >
-                                <Input.Password />
-                            </Form.Item>
-
-                            <Form.Item
-                            // wrapperCol={{ offset: 6, span: 16 }}
-                            >
-                                <Button type="primary" htmlType="submit" loading={isSubmit}>
-                                    Đăng nhập
-                                </Button>
-                            </Form.Item>
-                            <Divider>Or</Divider>
-                            <p className="text text-normal">Chưa có tài khoản ?
-                                <span>
-                                    <Link to='/register' > Đăng Ký </Link>
-                                </span>
-                            </p>
-                        </Form>
-                    </section>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center px-4 py-8">
+            <div className="w-full max-w-xl bg-white/95 backdrop-blur rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 className="text-2xl font-semibold text-slate-900">Đăng nhập</h2>
+                        <p className="text-slate-500">Tiếp tục hành trình ứng tuyển của bạn</p>
+                    </div>
+                    <Button type="link" onClick={() => navigate('/register')} className="text-primary-600">
+                        Tạo tài khoản
+                    </Button>
                 </div>
-            </main>
+                <Form
+                    layout="vertical"
+                    onFinish={onFinish}
+                    autoComplete="off"
+                    requiredMark={false}
+                >
+                    <Form.Item
+                        label="Email"
+                        name="username"
+                        rules={[{ required: true, message: 'Email không được để trống!' }]}
+                    >
+                        <Input
+                            size="large"
+                            prefix={<MailOutlined className="text-slate-400" />}
+                            placeholder="email@company.com"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Mật khẩu"
+                        name="password"
+                        rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
+                    >
+                        <Input.Password
+                            size="large"
+                            prefix={<LockOutlined className="text-slate-400" />}
+                            placeholder="••••••••"
+                        />
+                    </Form.Item>
+
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={isSubmit}
+                        size="large"
+                        className="w-full mt-2 rounded-xl"
+                    >
+                        Đăng nhập
+                    </Button>
+
+                    <Divider plain>Hoặc</Divider>
+                    <p className="text-sm text-center text-slate-600">
+                        Chưa có tài khoản?
+                        <Link className="font-semibold text-primary-600 ml-1" to='/register'>
+                            Đăng ký <ArrowRightOutlined />
+                        </Link>
+                    </p>
+                </Form>
+            </div>
         </div>
     )
 }

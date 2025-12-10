@@ -1,0 +1,150 @@
+.modal-company-root {
+  .ant-modal-content {
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8fbff 0%, #ffffff 40%, #f7f9fb 100%);
+  }
+
+  .ant-modal-header {
+    border-bottom: none;
+    padding: 20px 24px 0;
+    background: transparent;
+  }
+
+  .ant-modal-body {
+    padding-top: 0;
+  }
+}
+
+.modal-company {
+  &__title {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &__card {
+    background: transparent;
+  }
+
+  &__section {
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  &__editor {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus-within {
+      border-color: #2563eb;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+    }
+
+    .ql-toolbar {
+      border: none;
+      border-bottom: 1px solid #f1f5f9;
+      background: #f8fafc;
+    }
+
+    .ql-container {
+      border: none;
+      min-height: 220px;
+      background: #ffffff;
+    }
+  }
+
+  &__upload {
+    .ant-card-head-title {
+      font-weight: 600;
+    }
+
+    .ant-card-extra {
+      font-size: 12px;
+    }
+  }
+
+  &__uploader {
+    width: 100%;
+
+    .ant-upload.ant-upload-select-picture-card {
+      width: 100%;
+      margin: 0;
+      border-radius: 14px;
+      border: 1px dashed #d0d7e2;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #2563eb;
+        box-shadow: 0 8px 26px rgba(37, 99, 235, 0.1);
+      }
+    }
+  }
+
+  &__upload-inner {
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    padding: 12px 8px;
+    color: #0f172a;
+  }
+
+  &__upload-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563eb;
+    font-size: 18px;
+  }
+
+  &__upload-hint {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  &__footer {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, #ffffff 80%);
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0 0 18px 18px;
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  &__primary-btn {
+    min-width: 140px;
+    height: 40px;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+  }
+
+  &__ghost-btn {
+    min-width: 100px;
+    height: 40px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-company-root .ant-modal-content {
+    border-radius: 14px;
+  }
+
+  .modal-company__section {
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  .modal-company__footer {
+    border-radius: 0 0 14px 14px;
+  }
+}
+

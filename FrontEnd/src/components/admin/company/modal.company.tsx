@@ -1,6 +1,6 @@
 import { CheckSquareOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { FooterToolbar, ModalForm, ProCard, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Col, ConfigProvider, Form, Modal, Row, Upload, message, notification } from "antd";
+import { Badge, Col, ConfigProvider, Divider, Form, Modal, Row, Space, Typography, Upload, message, notification, theme } from "antd";
 import 'styles/reset.scss';
 import { isMobile } from 'react-device-detect';
 import ReactQuill from 'react-quill';
@@ -10,6 +10,7 @@ import { callCreateCompany, callUpdateCompany, callUploadSingleFile } from "@/co
 import { ICompany } from "@/types/backend";
 import { v4 as uuidv4 } from 'uuid';
 import enUS from 'antd/lib/locale/en_US';
+import './modal.company.scss';
 
 interface IProps {
     openModal: boolean;
@@ -32,6 +33,8 @@ interface ICompanyLogo {
 
 const ModalCompany = (props: IProps) => {
     const { openModal, setOpenModal, reloadTable, dataInit, setDataInit } = props;
+    const { token } = theme.useToken();
+    const isEdit = !!dataInit?.id;
 
     //modal animation
     const [animation, setAnimation] = useState<string>('open');
@@ -181,124 +184,194 @@ const ModalCompany = (props: IProps) => {
         <>
             {openModal &&
                 <>
-                    <ModalForm
-                        title={<>{dataInit?.id ? "Cập nhật Company" : "Tạo mới Company"}</>}
-                        open={openModal}
-                        modalProps={{
-                            onCancel: () => { handleReset() },
-                            afterClose: () => handleReset(),
-                            destroyOnClose: true,
-                            width: isMobile ? "100%" : 900,
-                            footer: null,
-                            keyboard: false,
-                            maskClosable: false,
-                            className: `modal-company ${animation}`,
-                            rootClassName: `modal-company-root ${animation}`
-                        }}
-                        scrollToFirstError={true}
-                        preserve={false}
-                        form={form}
-                        onFinish={submitCompany}
-                        initialValues={dataInit?.id ? dataInit : {}}
-                        submitter={{
-                            render: (_: any, dom: any) => <FooterToolbar>{dom}</FooterToolbar>,
-                            submitButtonProps: {
-                                icon: <CheckSquareOutlined />
-                            },
-                            searchConfig: {
-                                resetText: "Hủy",
-                                submitText: <>{dataInit?.id ? "Cập nhật" : "Tạo mới"}</>,
+                    <ConfigProvider
+                        theme={{
+                            token: {
+                                colorPrimary: '#2563eb',
+                                borderRadius: 14,
+                                fontSize: 14,
+                                fontFamily: "'Inter', 'SF Pro Display', 'Segoe UI', sans-serif",
                             }
                         }}
                     >
-                        <Row gutter={16}>
-                            <Col span={24}>
-                                <ProFormText
-                                    label="Tên công ty"
-                                    name="name"
-                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                    placeholder="Nhập tên công ty"
-                                />
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item
-                                    labelCol={{ span: 24 }}
-                                    label="Ảnh Logo"
-                                    name="logo"
-                                    rules={[{
-                                        required: true,
-                                        message: 'Vui lòng không bỏ trống',
-                                        validator: () => {
-                                            if (dataLogo.length > 0) return Promise.resolve();
-                                            else return Promise.reject(false);
-                                        }
-                                    }]}
-                                >
-                                    <ConfigProvider locale={enUS}>
-                                        <Upload
-                                            name="logo"
-                                            listType="picture-card"
-                                            className="avatar-uploader"
-                                            maxCount={1}
-                                            multiple={false}
-                                            customRequest={handleUploadFileLogo}
-                                            beforeUpload={beforeUpload}
-                                            onChange={handleChange}
-                                            onRemove={(file) => handleRemoveFile(file)}
-                                            onPreview={handlePreview}
-                                            defaultFileList={
-                                                dataInit?.id ? [
-                                                    {
-                                                        uid: uuidv4(),
-                                                        name: dataInit.logo,
-                                                        url: dataInit.logo,
-                                                        status: 'done'
-                                                    }
-                                                ] : []
-                                            }
-
-                                        >
-                                            <div>
-                                                {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
-                                                <div style={{ marginTop: 8 }}>Upload</div>
-                                            </div>
-                                        </Upload>
-                                    </ConfigProvider>
-                                </Form.Item>
-
-                            </Col>
-
-                            <Col span={16}>
-                                <ProFormTextArea
-                                    label="Địa chỉ"
-                                    name="address"
-                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                    placeholder="Nhập địa chỉ công ty"
-                                    fieldProps={{
-                                        autoSize: { minRows: 4 }
-                                    }}
-                                />
-                            </Col>
-
+                        <ModalForm
+                            title={
+                                <div className="modal-company__title">
+                                    <Space size={12} align="start">
+                                        <Badge status={isEdit ? "processing" : "success"} />
+                                        <div>
+                                            <Typography.Title level={4} style={{ margin: 0, color: token.colorTextHeading }}>
+                                                {isEdit ? "Cập nhật Company" : "Tạo mới Company"}
+                                            </Typography.Title>
+                                            <Typography.Text type="secondary">
+                                                Thông tin hiển thị trên hồ sơ tuyển dụng của bạn
+                                            </Typography.Text>
+                                        </div>
+                                    </Space>
+                                </div>
+                            }
+                            open={openModal}
+                            modalProps={{
+                                onCancel: () => { handleReset() },
+                                afterClose: () => handleReset(),
+                                destroyOnClose: true,
+                                width: isMobile ? "100%" : 960,
+                                footer: null,
+                                keyboard: false,
+                                maskClosable: false,
+                                styles: {
+                                    body: { padding: isMobile ? 14 : 24, background: token.colorBgLayout }
+                                },
+                                className: `modal-company ${animation}`,
+                                rootClassName: `modal-company-root ${animation}`
+                            }}
+                            scrollToFirstError={true}
+                            preserve={false}
+                            form={form}
+                            onFinish={submitCompany}
+                            initialValues={dataInit?.id ? dataInit : {}}
+                            submitter={{
+                                render: (_: any, dom: any) => <FooterToolbar className="modal-company__footer">{dom}</FooterToolbar>,
+                                submitButtonProps: {
+                                    icon: <CheckSquareOutlined />,
+                                    className: "modal-company__primary-btn"
+                                },
+                                resetButtonProps: {
+                                    className: "modal-company__ghost-btn"
+                                },
+                                searchConfig: {
+                                    resetText: "Hủy",
+                                    submitText: <>{dataInit?.id ? "Cập nhật" : "Tạo mới"}</>,
+                                }
+                            }}
+                        >
                             <ProCard
-                                title="Miêu tả"
-                                // subTitle="mô tả công ty"
-                                headStyle={{ color: '#d81921' }}
-                                style={{ marginBottom: 20 }}
-                                headerBordered
-                                size="small"
+                                ghost
                                 bordered
+                                className="modal-company__card"
+                                headStyle={{ borderBottom: 'none', paddingBottom: 0 }}
+                                bodyStyle={{ paddingTop: 8 }}
                             >
-                                <Col span={24}>
-                                    <ReactQuill
-                                        theme="snow"
-                                        value={value}
-                                        onChange={setValue}
-                                    />
-                                </Col>
+                                <Row gutter={[16, 16]}>
+                                    <Col xs={24} md={16}>
+                                        <ProCard
+                                            bordered
+                                            className="modal-company__section"
+                                            title={<Typography.Text strong>Thông tin công ty</Typography.Text>}
+                                            headerBordered
+                                        >
+                                            <Space direction="vertical" size={14} style={{ width: '100%' }}>
+                                                <ProFormText
+                                                    label="Tên công ty"
+                                                    name="name"
+                                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                                    placeholder="Nhập tên công ty"
+                                                    fieldProps={{
+                                                        size: "large",
+                                                        allowClear: true
+                                                    }}
+                                                />
+                                                <ProFormTextArea
+                                                    label="Địa chỉ"
+                                                    name="address"
+                                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                                    placeholder="Nhập địa chỉ công ty"
+                                                    fieldProps={{
+                                                        autoSize: { minRows: 3, maxRows: 6 },
+                                                        showCount: true
+                                                    }}
+                                                />
+                                            </Space>
+                                        </ProCard>
+                                        <ProCard
+                                            bordered
+                                            className="modal-company__section"
+                                            title={<Typography.Text strong>Giới thiệu & miêu tả</Typography.Text>}
+                                            headStyle={{ marginTop: 8 }}
+                                            headerBordered
+                                        >
+                                            <Typography.Paragraph type="secondary" style={{ marginBottom: 12 }}>
+                                                Giúp ứng viên hiểu về văn hóa, sứ mệnh và môi trường làm việc.
+                                            </Typography.Paragraph>
+                                            <div className="modal-company__editor">
+                                                <ReactQuill
+                                                    theme="snow"
+                                                    value={value}
+                                                    onChange={setValue}
+                                                />
+                                            </div>
+                                        </ProCard>
+                                    </Col>
+                                    <Col xs={24} md={8}>
+                                        <ProCard
+                                            bordered
+                                            className="modal-company__section modal-company__upload"
+                                            title={<Typography.Text strong>Ảnh Logo</Typography.Text>}
+                                            extra={<Typography.Text type="secondary">PNG hoặc JPG &lt; 2MB</Typography.Text>}
+                                            headerBordered
+                                        >
+                                            <Form.Item
+                                                labelCol={{ span: 24 }}
+                                                name="logo"
+                                                rules={[{
+                                                    required: true,
+                                                    message: 'Vui lòng không bỏ trống',
+                                                    validator: () => {
+                                                        if (dataLogo.length > 0) return Promise.resolve();
+                                                        else return Promise.reject(false);
+                                                    }
+                                                }]}
+                                                style={{ marginBottom: 0 }}
+                                            >
+                                                <ConfigProvider locale={enUS}>
+                                                    <Upload
+                                                        name="logo"
+                                                        listType="picture-card"
+                                                        className="modal-company__uploader"
+                                                        maxCount={1}
+                                                        multiple={false}
+                                                        customRequest={handleUploadFileLogo}
+                                                        beforeUpload={beforeUpload}
+                                                        onChange={handleChange}
+                                                        onRemove={(file) => handleRemoveFile(file)}
+                                                        onPreview={handlePreview}
+                                                        defaultFileList={
+                                                            dataInit?.id ? [
+                                                                {
+                                                                    uid: uuidv4(),
+                                                                    name: dataInit.logo,
+                                                                    url: dataInit.logo,
+                                                                    status: 'done'
+                                                                }
+                                                            ] : []
+                                                        }
+                                                    >
+                                                        <div className="modal-company__upload-inner">
+                                                            <div className="modal-company__upload-icon">
+                                                                {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
+                                                            </div>
+                                                            <Typography.Text strong>
+                                                                Tải logo lên
+                                                            </Typography.Text>
+                                                            <Typography.Text type="secondary" className="modal-company__upload-hint">
+                                                                Kéo thả hoặc nhấn để chọn file
+                                                            </Typography.Text>
+                                                        </div>
+                                                    </Upload>
+                                                </ConfigProvider>
+                                            </Form.Item>
+                                            <Divider />
+                                            <Space direction="vertical" size={8}>
+                                                <Typography.Text type="secondary">Gợi ý:</Typography.Text>
+                                                <Typography.Text>- Sử dụng logo nền trong suốt.</Typography.Text>
+                                                <Typography.Text>- Tỷ lệ vuông để hiển thị đẹp hơn.</Typography.Text>
+                                            </Space>
+                                        </ProCard>
+                                    </Col>
+                                </Row>
                             </ProCard>
-                        </Row>
-                    </ModalForm>
+                        </ModalForm>
+                    </ConfigProvider>
                     <Modal
                         open={previewOpen}
                         title={previewTitle}

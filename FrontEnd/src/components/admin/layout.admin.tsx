@@ -20,6 +20,7 @@ import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import { ALL_PERMISSIONS } from '@/config/permissions';
+import '@/styles/tailwind.css';
 
 const { Content, Sider } = Layout;
 
@@ -158,22 +159,24 @@ const LayoutAdmin = () => {
         <>
             <Layout
                 style={{ minHeight: '100vh' }}
-                className="layout-admin"
+                className="layout-admin bg-slate-50"
             >
                 {!isMobile ?
                     <Sider
                         theme='light'
                         collapsible
                         collapsed={collapsed}
-                        onCollapse={(value) => setCollapsed(value)}>
-                        <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
-                            <BugOutlined />  ADMIN
+                        onCollapse={(value) => setCollapsed(value)}
+                        className="shadow-card bg-white">
+                        <div className="flex items-center justify-center gap-2 h-12 mx-4 my-4 rounded-xl bg-gradient-to-r from-primary-100 to-primary-50 text-primary-700 font-semibold tracking-wide">
+                            <BugOutlined /> ADMIN
                         </div>
                         <Menu
                             selectedKeys={[activeMenu]}
                             mode="inline"
                             items={menuItems}
                             onClick={(e) => setActiveMenu(e.key)}
+                            className="border-none"
                         />
                     </Sider>
                     :
@@ -187,29 +190,37 @@ const LayoutAdmin = () => {
 
                 <Layout>
                     {!isMobile &&
-                        <div className='admin-header' style={{ display: "flex", justifyContent: "space-between", marginRight: 20 }}>
+                        <div className='admin-header px-6 py-4 flex items-center justify-between bg-white shadow-sm border-b border-slate-100'>
                             <Button
                                 type="text"
                                 icon={collapsed ? React.createElement(MenuUnfoldOutlined) : React.createElement(MenuFoldOutlined)}
                                 onClick={() => setCollapsed(!collapsed)}
                                 style={{
                                     fontSize: '16px',
-                                    width: 64,
-                                    height: 64,
+                                    width: 48,
+                                    height: 48,
                                 }}
+                                className="rounded-full hover:bg-primary-50 transition-colors"
                             />
 
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
-                                <Space style={{ cursor: "pointer" }}>
-                                    Welcome {user?.name}
-                                    <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
+                                <Space style={{ cursor: "pointer" }} className="px-3 py-2 rounded-full hover:bg-slate-50 transition">
+                                    <div className="text-right">
+                                        <div className="text-sm text-slate-500">Xin chào</div>
+                                        <div className="font-semibold text-slate-900">{user?.name}</div>
+                                    </div>
+                                    <Avatar className="bg-primary-600"> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
 
                                 </Space>
                             </Dropdown>
                         </div>
                     }
-                    <Content style={{ padding: '15px' }}>
-                        <Outlet />
+                    <Content style={{ padding: '15px' }} className="bg-slate-50">
+                        <div className="page-container">
+                            <div className="glass-card p-4 sm:p-6">
+                                <Outlet />
+                            </div>
+                        </div>
                     </Content>
                     {/* <Footer style={{ padding: 10, textAlign: 'center' }}>
                         React Typescript series Nest.JS &copy; Hỏi Dân IT - Made with <HeartTwoTone />

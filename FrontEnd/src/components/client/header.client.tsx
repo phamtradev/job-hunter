@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CodeOutlined, ContactsOutlined, FireOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, TwitterOutlined } from '@ant-design/icons';
-import { Avatar, Drawer, Dropdown, MenuProps, Space, message } from 'antd';
-import { Menu, ConfigProvider } from 'antd';
+import { Avatar, Drawer, Dropdown, MenuProps, Space, message, Button } from 'antd';
+import { Menu } from 'antd';
 import styles from '@/styles/client.module.scss';
 import { isMobile } from 'react-device-detect';
 import { FaReact } from 'react-icons/fa';
@@ -93,55 +93,70 @@ const Header = (props: any) => {
 
     return (
         <>
-            <div className={styles["header-section"]}>
-                <div className={styles["container"]}>
-                    {!isMobile ?
-                        <div style={{ display: "flex", gap: 30 }}>
-                            <div className={styles['brand']} >
-                                <FaReact onClick={() => navigate('/')} title='Hỏi Dân IT' />
+            <header className="sticky top-0 z-50">
+                <div className="relative overflow-hidden bg-slate-900/90 backdrop-blur border-b border-slate-800">
+                    <div className="absolute inset-x-0 -top-12 h-28 bg-gradient-to-r from-primary-500/25 via-emerald-400/20 to-indigo-400/25 blur-3xl animate-pulse-soft pointer-events-none" />
+                    <div className="page-container h-14 sm:h-16 flex items-center justify-between gap-4 relative">
+                        <div className="flex items-center gap-3">
+                            <div
+                                className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary-500 via-indigo-500 to-emerald-400 text-white text-xl shadow-soft cursor-pointer flex items-center justify-center transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary-500/30"
+                                onClick={() => navigate('/')}
+                                title="Job Hunter"
+                            >
+                                <FaReact />
                             </div>
-                            <div className={styles['top-menu']}>
-                                <ConfigProvider
-                                    theme={{
-                                        token: {
-                                            colorPrimary: '#fff',
-                                            colorBgContainer: '#222831',
-                                            colorText: '#a7a7a7',
-                                        },
-                                    }}
-                                >
-
+                            {!isMobile && (
+                                <nav className="hidden sm:flex items-center">
                                     <Menu
-                                        // onClick={onClick}
                                         selectedKeys={[current]}
                                         mode="horizontal"
                                         items={items}
+                                        className="header-menu bg-transparent text-slate-200 border-none"
                                     />
-                                </ConfigProvider>
-                                <div className={styles['extra']}>
-                                    {isAuthenticated === false ?
-                                        <Link to={'/login'}>Đăng Nhập</Link>
-                                        :
-                                        <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
-                                            <Space style={{ cursor: "pointer" }}>
-                                                <span>Welcome {user?.name}</span>
-                                                <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
-                                            </Space>
-                                        </Dropdown>
-                                    }
+                                </nav>
+                            )}
+                        </div>
 
-                                </div>
-
+                        {!isMobile && (
+                            <div className="flex items-center gap-3">
+                                {isAuthenticated === false ? (
+                                    <>
+                                        <Button type="text" onClick={() => navigate('/login')} className="text-slate-200">
+                                            Đăng Nhập
+                                        </Button>
+                                        <Button type="primary" onClick={() => navigate('/register')} className="rounded-full px-4">
+                                            Đăng Ký
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
+                                        <Space className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-100 cursor-pointer hover:bg-slate-800 transition">
+                                            <span>Chào, {user?.name}</span>
+                                            <Avatar className="bg-primary-600">
+                                                {user?.name?.substring(0, 2)?.toUpperCase()}
+                                            </Avatar>
+                                        </Space>
+                                    </Dropdown>
+                                )}
                             </div>
-                        </div>
-                        :
-                        <div className={styles['header-mobile']}>
-                            <span>Your APP</span>
-                            <MenuFoldOutlined onClick={() => setOpenMobileMenu(true)} />
-                        </div>
-                    }
+                        )}
+
+                        {isMobile && (
+                            <div className="flex items-center gap-3">
+                                {isAuthenticated && (
+                                    <Avatar className="bg-primary-600">
+                                        {user?.name?.substring(0, 2)?.toUpperCase()}
+                                    </Avatar>
+                                )}
+                                <MenuFoldOutlined
+                                    onClick={() => setOpenMobileMenu(true)}
+                                    className="text-xl text-slate-200"
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
+            </header>
             <Drawer title="Chức năng"
                 placement="right"
                 onClose={() => setOpenMobileMenu(false)}

@@ -1,9 +1,9 @@
-import { Button, Divider, Form, Input, Row, Select, message, notification } from 'antd';
+import { Button, Divider, Form, Input, Select, message, notification } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { callRegister } from 'config/api';
-import styles from 'styles/auth.module.scss';
 import { IUser } from '@/types/backend';
+import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 
@@ -31,103 +31,108 @@ const RegisterPage = () => {
 
 
     return (
-        <div className={styles["register-page"]} >
-
-            <main className={styles.main} >
-                <div className={styles.container} >
-                    <section className={styles.wrapper} >
-                        <div className={styles.heading} >
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}> Đăng Ký Tài Khoản </h2>
-                            < Divider />
-                        </div>
-                        < Form<IUser>
-                            name="basic"
-                            // style={{ maxWidth: 600, margin: '0 auto' }}
-                            onFinish={onFinish}
-                            autoComplete="off"
-                        >
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Họ tên"
-                                name="name"
-                                rules={[{ required: true, message: 'Họ tên không được để trống!' }]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-
-                            <Form.Item
-                                labelCol={{ span: 24 }
-                                } //whole column
-                                label="Email"
-                                name="email"
-                                rules={[{ required: true, message: 'Email không được để trống!' }]}
-                            >
-                                <Input type='email' />
-                            </Form.Item>
-
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Mật khẩu"
-                                name="password"
-                                rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
-                            >
-                                <Input.Password />
-                            </Form.Item>
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Tuổi"
-                                name="age"
-                                rules={[{ required: true, message: 'Tuổi không được để trống!' }]}
-                            >
-                                <Input type='number' />
-                            </Form.Item>
-
-
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                name="gender"
-                                label="Giới tính"
-                                rules={[{ required: true, message: 'Giới tính không được để trống!' }]}
-                            >
-                                <Select
-                                    // placeholder="Select a option and change input text above"
-                                    // onChange={onGenderChange}
-                                    allowClear
-                                >
-                                    <Option value="MALE">Nam</Option>
-                                    <Option value="FEMALE">Nữ</Option>
-                                    <Option value="OTHER">Khác</Option>
-                                </Select>
-                            </Form.Item>
-
-
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Địa chỉ"
-                                name="address"
-                                rules={[{ required: true, message: 'Địa chỉ không được để trống!' }]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            < Form.Item
-                            // wrapperCol={{ offset: 6, span: 16 }}
-                            >
-                                <Button type="primary" htmlType="submit" loading={isSubmit} >
-                                    Đăng ký
-                                </Button>
-                            </Form.Item>
-                            <Divider> Or </Divider>
-                            <p className="text text-normal" > Đã có tài khoản ?
-                                <span>
-                                    <Link to='/login' > Đăng Nhập </Link>
-                                </span>
-                            </p>
-                        </Form>
-                    </section>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center px-4 py-8">
+            <div className="w-full max-w-xl bg-white/95 backdrop-blur rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 className="text-2xl font-semibold text-slate-900">Đăng ký tài khoản</h2>
+                        <p className="text-slate-500">Nhập thông tin để tạo tài khoản mới</p>
+                    </div>
+                    <Button type="link" onClick={() => navigate('/login')} className="text-primary-600">
+                        <ArrowLeftOutlined /> Đăng nhập
+                    </Button>
                 </div>
-            </main>
+                <Form<IUser>
+                    layout="vertical"
+                    onFinish={onFinish}
+                    autoComplete="off"
+                    requiredMark={false}
+                >
+                    <Form.Item
+                        label="Họ tên"
+                        name="name"
+                        rules={[{ required: true, message: 'Họ tên không được để trống!' }]}
+                    >
+                        <Input
+                            size="large"
+                            prefix={<UserOutlined className="text-slate-400" />}
+                            placeholder="Nguyễn Văn A"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[{ required: true, message: 'Email không được để trống!' }]}
+                    >
+                        <Input
+                            type='email'
+                            size="large"
+                            prefix={<MailOutlined className="text-slate-400" />}
+                            placeholder="email@company.com"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Mật khẩu"
+                        name="password"
+                        rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
+                    >
+                        <Input.Password
+                            size="large"
+                            prefix={<LockOutlined className="text-slate-400" />}
+                            placeholder="••••••••"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Tuổi"
+                        name="age"
+                        rules={[{ required: true, message: 'Tuổi không được để trống!' }]}
+                    >
+                        <Input type='number' size="large" placeholder="24" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="gender"
+                        label="Giới tính"
+                        rules={[{ required: true, message: 'Giới tính không được để trống!' }]}
+                    >
+                        <Select
+                            size="large"
+                            allowClear
+                            placeholder="Chọn giới tính"
+                        >
+                            <Option value="MALE">Nam</Option>
+                            <Option value="FEMALE">Nữ</Option>
+                            <Option value="OTHER">Khác</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Địa chỉ"
+                        name="address"
+                        rules={[{ required: true, message: 'Địa chỉ không được để trống!' }]}
+                    >
+                        <Input
+                            size="large"
+                            prefix={<HomeOutlined className="text-slate-400" />}
+                            placeholder="Hà Nội, Việt Nam"
+                        />
+                    </Form.Item>
+
+                    <Button type="primary" htmlType="submit" loading={isSubmit} size="large" className="w-full mt-2 rounded-xl">
+                        Đăng ký
+                    </Button>
+                    <Divider plain>Hoặc</Divider>
+                    <p className="text-sm text-center text-slate-600">
+                        Đã có tài khoản?
+                        <Link to='/login' className="font-semibold text-primary-600 ml-1">
+                            Đăng nhập
+                        </Link>
+                    </p>
+                </Form>
+            </div>
         </div>
     )
 }

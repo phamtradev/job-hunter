@@ -16,7 +16,6 @@ import ProtectedRoute from 'components/share/protected-route.ts';
 import Header from 'components/client/header.client';
 import Footer from 'components/client/footer.client';
 import HomePage from 'pages/home';
-import styles from 'styles/app.module.scss';
 import DashboardPage from './pages/admin/dashboard';
 import CompanyPage from './pages/admin/company';
 import PermissionPage from './pages/admin/permission';
@@ -45,10 +44,14 @@ const LayoutClient = () => {
   }, [location]);
 
   return (
-    <div className='layout-app' ref={rootRef}>
+    <div className="app-shell" ref={rootRef}>
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <div className={styles['content-app']}>
-        <Outlet context={[searchTerm, setSearchTerm]} />
+      <div className="page-container py-6">
+        <div className="glass-card shadow-soft overflow-hidden">
+          <div className="bg-white">
+            <Outlet context={[searchTerm, setSearchTerm]} />
+          </div>
+        </div>
       </div>
       <Footer />
     </div>

@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react-swc'
 import path from 'path';
 import { visualizer } from "rollup-plugin-visualizer";
 import dns from 'dns';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 //running on localhost instead of IP 127.0.0.1
 // https://vitejs.dev/config/server-options.html#server-host
@@ -31,5 +33,13 @@ export default defineConfig(({ command, mode }) => {
         pages: `${path.resolve(__dirname, "./src/pages/")}`,
       },
     },
+    css: {
+      postcss: {
+        plugins: [
+          tailwindcss(),
+          autoprefixer(),
+        ]
+      }
+    }
   }
 })
