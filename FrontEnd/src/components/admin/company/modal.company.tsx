@@ -27,6 +27,7 @@ interface ICompanyForm {
 interface ICompanyLogo {
     name: string;
     uid: string;
+    url?: string;
 }
 
 const ModalCompany = (props: IProps) => {
@@ -52,7 +53,8 @@ const ModalCompany = (props: IProps) => {
                 address: dataInit.address,
             })
             setDataLogo([{
-                name: dataInit.logo,
+                name: dataInit.logo,      // publicId
+                url: dataInit.logoUrl,    // ảnh Cloudinary thật
                 uid: uuidv4(),
             }])
         }
@@ -68,7 +70,7 @@ const ModalCompany = (props: IProps) => {
 
         if (dataInit?.id) {
             //update
-            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].name);
+            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].url || dataLogo[0].name);
             if (res.data) {
                 message.success("Cập nhật company thành công");
                 handleReset();
@@ -81,7 +83,7 @@ const ModalCompany = (props: IProps) => {
             }
         } else {
             //create
-            const res = await callCreateCompany(name, address, value, dataLogo[0].name);
+            const res = await callCreateCompany(name, address, value, dataLogo[0].url || dataLogo[0].name);
             if (res.data) {
                 message.success("Thêm mới company thành công");
                 handleReset();
@@ -158,18 +160,19 @@ const ModalCompany = (props: IProps) => {
 
     const handleUploadFileLogo = async ({ file, onSuccess, onError }: any) => {
         const res = await callUploadSingleFile(file, "company");
+
         if (res && res.data) {
-            setDataLogo([{
-                name: res.data.fileName,
-                uid: uuidv4()
-            }])
-            if (onSuccess) onSuccess('ok')
+            setDataLogo([
+                {
+                    name: res.data.publicId,   // lưu publicId vào DB
+                    url: res.data.fileUrl,     // dùng URL để hiển thị ảnh
+                    uid: uuidv4()
+                }
+            ]);
+
+            if (onSuccess) onSuccess('ok');
         } else {
-            if (onError) {
-                setDataLogo([])
-                const error = new Error(res.message);
-                onError({ event: error });
-            }
+            onError?.({ event: new Error(res?.message) });
         }
     };
 
@@ -244,15 +247,14 @@ const ModalCompany = (props: IProps) => {
                                             onRemove={(file) => handleRemoveFile(file)}
                                             onPreview={handlePreview}
                                             defaultFileList={
-                                                dataInit?.id ?
-                                                    [
-                                                        {
-                                                            uid: uuidv4(),
-                                                            name: dataInit?.logo ?? "",
-                                                            status: 'done',
-                                                            url: `${import.meta.env.VITE_BACKEND_URL}/uploads/company/${dataInit?.logo}`,
-                                                        }
-                                                    ] : []
+                                                dataInit?.id ? [
+                                                    {
+                                                        uid: uuidv4(),
+                                                        name: dataInit.logo,     // publicId
+                                                        url: dataInit.logoUrl,   // phải là URL đầy đủ !!!
+                                                        status: 'done'
+                                                    }
+                                                ] : []
                                             }
 
                                         >

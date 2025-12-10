@@ -57,7 +57,7 @@ const ApplyModal = (props: IProps) => {
         async customRequest({ file, onSuccess, onError }: any) {
             const res = await callUploadSingleFile(file, "resume");
             if (res && res.data) {
-                setUrlCV(res.data.fileName);
+                setUrlCV(res.data.publicId || res.data.fileUrl);
                 if (onSuccess) onSuccess('ok')
             } else {
                 if (onError) {
