@@ -63,6 +63,10 @@
     color: #e2e8f0 !important;
 }
 
+.logo-spin {
+    animation: spin 20s linear infinite;
+}
+
 .no-hover-btn:hover,
 .no-hover-btn:focus,
 .no-hover-btn:active {
@@ -112,6 +116,15 @@
     animation-name: snow-fall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes snow-fall {

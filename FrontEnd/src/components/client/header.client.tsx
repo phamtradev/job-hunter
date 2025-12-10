@@ -99,11 +99,11 @@ const Header = (props: any) => {
                     <div className="page-container h-14 sm:h-16 flex items-center justify-between gap-4 relative">
                         <div className="flex items-center gap-3">
                             <div
-                                className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary-500 via-indigo-500 to-emerald-400 text-white text-xl shadow-soft cursor-pointer flex items-center justify-center transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary-500/30"
+                                className="w-10 h-10 flex items-center justify-center cursor-pointer"
                                 onClick={() => navigate('/')}
                                 title="Job Hunter"
                             >
-                                <FaReact />
+                                <FaReact style={{ color: '#61dafb', fontSize: 28 }} />
                             </div>
                             {!isMobile && (
                                 <nav className="hidden sm:flex items-center">
