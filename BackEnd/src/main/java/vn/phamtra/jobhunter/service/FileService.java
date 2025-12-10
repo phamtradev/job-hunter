@@ -1,3 +1,13 @@
+package vn.phamtra.jobhunter.service;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
+
 @Service
 public class FileService {
 
@@ -7,7 +17,7 @@ public class FileService {
         this.cloudinary = cloudinary;
     }
 
-    public String uploadToCloudinary(MultipartFile file, String folder) throws IOException {
+    public Map<String, String> uploadToCloudinary(MultipartFile file, String folder) throws IOException {
 
         if (file == null || file.isEmpty()) {
             throw new IOException("File empty!");
@@ -15,10 +25,9 @@ public class FileService {
 
         String original = file.getOriginalFilename();
 
-        // FIX: Không thêm timestamp nếu FE đã có timestamp
         String finalName;
         if (hasTimestampPrefix(original)) {
-            finalName = original; // giữ nguyên
+            finalName = original;
         } else {
             finalName = System.currentTimeMillis() + "-" + original;
         }
@@ -27,17 +36,19 @@ public class FileService {
                 file.getBytes(),
                 ObjectUtils.asMap(
                         "folder", folder,
-                        "public_id", finalName));
+                        "public_id", finalName,
+                        "overwrite", true));
 
-        return uploadResult.get("secure_url").toString();
+        return Map.of(
+                "url", uploadResult.get("secure_url").toString(),
+                "publicId", uploadResult.get("public_id").toString());
     }
 
     private boolean hasTimestampPrefix(String name) {
         if (name == null)
             return false;
-
         int idx = name.indexOf("-");
-        if (idx > 0 && idx < 15) {
+        if (idx > 0 && idx < 16) {
             String prefix = name.substring(0, idx);
             return prefix.matches("\\d{10,15}");
         }

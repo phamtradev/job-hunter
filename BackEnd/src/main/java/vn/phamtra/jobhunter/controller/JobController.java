@@ -47,7 +47,7 @@ public class JobController {
     @DeleteMapping("/jobs/{id}")
     @ApiMessage("Delete a job")
     public ResponseEntity<Void> deleteJob(@PathVariable("id") long id) throws IdInvalidException {
-        //check id
+        // check id
         Optional<Job> currenJob = this.jobService.fetchJobById(id);
         if (currenJob == null) {
             throw new IdInvalidException("Job với id: " + id + " không tồn tại");
@@ -73,6 +73,5 @@ public class JobController {
         }
         return ResponseEntity.ok().body(currentJob.get());
     }
-
 
 }
