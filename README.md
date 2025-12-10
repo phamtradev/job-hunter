@@ -42,7 +42,7 @@ A comprehensive job hunting platform backend built with Spring Boot, providing R
 - **MySQL 8.0** (if running without Docker)
 - **Gradle** (or use Gradle Wrapper)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Option 1: Run with Docker (Recommended)
 
