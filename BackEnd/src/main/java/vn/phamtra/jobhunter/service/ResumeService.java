@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.phamtra.jobhunter.domain.Job;
-import vn.phamtra.jobhunter.domain.Permission;
 import vn.phamtra.jobhunter.domain.Resume;
 import vn.phamtra.jobhunter.domain.User;
 import vn.phamtra.jobhunter.domain.response.ResultPaginationDTO;
@@ -20,10 +19,10 @@ import vn.phamtra.jobhunter.repository.JobRepository;
 import vn.phamtra.jobhunter.repository.ResumeRepository;
 import vn.phamtra.jobhunter.repository.UserRepository;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
+import vn.phamtra.jobhunter.util.FileUtil;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Filter;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,7 +107,8 @@ public class ResumeService {
 
         res.setId(resume.getId());
         res.setEmail(resume.getEmail());
-        res.setUrl(resume.getUrl());
+        // Normalize URL to extract only filename (avoid duplicate folder in frontend)
+        res.setUrl(FileUtil.extractFilename(resume.getUrl()));
         res.setStatus(resume.getStatus());
         res.setCreatedAt(resume.getCreatedAt());
         res.setCreatedBy(resume.getCreatedBy());

@@ -1,12 +1,13 @@
 package vn.phamtra.jobhunter.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.phamtra.jobhunter.util.error.SecurityUtil;
+import vn.phamtra.jobhunter.util.FileUtil;
 
 import java.time.Instant;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Company {
 
     private String address;
 
+    @JsonIgnore // Hide raw logo field, use normalized getter instead
     private String logo;
 
     //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
@@ -59,6 +61,15 @@ public class Company {
     public void handleBeforeUpdate() {
         this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
+    }
+
+    /**
+     * Normalize logo URL to return only filename when serializing to JSON
+     * This prevents duplicate folder paths when frontend builds the full URL
+     */
+    @JsonGetter("logo")
+    public String getNormalizedLogo() {
+        return FileUtil.extractFilename(this.logo);
     }
 
 }
