@@ -1,7 +1,5 @@
 package vn.phamtra.jobhunter.controller;
 
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +12,6 @@ import vn.phamtra.jobhunter.util.annotation.ApiMessage;
 import vn.phamtra.jobhunter.util.error.StorageException;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +20,6 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class FileController {
 
-    @Value("${phamtra.upload-file.base-uri}")
-    private String baseURI;
-
     private final FileService fileService;
 
     public FileController(FileService fileService) {
@@ -33,34 +27,53 @@ public class FileController {
     }
 
     @PostMapping("/files")
-@ApiMessage("upload single file")
-public ResponseEntity<ResUploadFileDTO> uploadFile(
-        @RequestParam(value = "file", required = false) MultipartFile file,
-        @RequestParam("folder") String folder
-) throws URISyntaxException, IOException, StorageException {
-    
-    if (file == null || file.isEmpty()) {
-        throw new StorageException("File is empty. Please upload a file");
+    @ApiMessage("upload single file")
+    public ResponseEntity<ResUploadFileDTO> uploadFile(@RequestParam(value = "file", required = false) MultipartFile file,
+                                                       @RequestParam("folder") String folder) throws IOException, StorageException {
+        try {
+            //validate
+            if (file == null || file.isEmpty()) {
+                throw new StorageException("File is empty. Please upload a file");
+            }
+
+            String originalFileName = file.getOriginalFilename();
+            if (originalFileName == null || originalFileName.isEmpty()) {
+                throw new StorageException("File name is empty");
+            }
+
+            List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
+
+            boolean isValid = allowedExtensions.stream().anyMatch(item -> originalFileName.toLowerCase().endsWith(item));
+            if (!isValid) {
+                throw new StorageException("Invalid file extension. Only allows " + allowedExtensions.toString());
+            }
+
+            System.out.println(">>> FileController - Uploading file: " + originalFileName + " to folder: " + folder);
+
+            //create a directory if not exist (FileService will handle baseURI internally)
+            this.fileService.createDirectory(folder);
+
+            //store file
+            String storedFileName = this.fileService.store(file, folder);
+
+            // Build public URL: /uploads/folder/filename
+            String publicUrl = "/uploads/" + folder + "/" + storedFileName;
+
+            System.out.println(">>> FileController - File uploaded successfully. Public URL: " + publicUrl);
+
+            ResUploadFileDTO res = new ResUploadFileDTO(publicUrl, Instant.now());
+            return ResponseEntity.ok().body(res);
+        } catch (StorageException e) {
+            System.err.println(">>> FileController - StorageException: " + e.getMessage());
+            throw e;
+        } catch (IOException e) {
+            System.err.println(">>> FileController - IOException: " + e.getMessage());
+            e.printStackTrace();
+            throw new StorageException("Failed to upload file: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println(">>> FileController - Unexpected error: " + e.getMessage());
+            e.printStackTrace();
+            throw new StorageException("Unexpected error during file upload: " + e.getMessage());
+        }
     }
-
-    String originalName = file.getOriginalFilename();
-    List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
-
-    boolean isValid = allowedExtensions.stream()
-            .anyMatch(ext -> originalName.toLowerCase().endsWith(ext));
-
-    if (!isValid) {
-        throw new StorageException("Invalid file extension. Only allows " + allowedExtensions);
-    }
-
-    // Create directory
-    this.fileService.createDirectory(folder);
-
-    // Store file (đổi tên biến để tránh trùng)
-    String storedFileName = this.fileService.store(file, folder);
-
-    ResUploadFileDTO res = new ResUploadFileDTO(storedFileName, Instant.now());
-
-    return ResponseEntity.ok().body(res);
-}
 }
