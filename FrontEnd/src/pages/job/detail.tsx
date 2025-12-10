@@ -85,7 +85,7 @@ const ClientJobDetailPage = (props: any) => {
                                         <img
                                             width={"200px"}
                                             alt="example"
-                                            src={jobDetail.company?.logoUrl || jobDetail.company?.logo}
+                                            src={jobDetail.company?.logo}
                                         />
                                     </div>
                                     <div>

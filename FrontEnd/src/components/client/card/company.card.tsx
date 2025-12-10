@@ -90,7 +90,7 @@ const CompanyCard = (props: IProps) => {
                                                 <img
                                                     style={{ maxWidth: "200px" }}
                                                     alt="example"
-                                                    src={item?.logoUrl || item?.logo}
+                                                    src={item?.logo}
                                                 />
                                             </div>
                                         }

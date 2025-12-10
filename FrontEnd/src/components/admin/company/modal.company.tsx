@@ -53,8 +53,8 @@ const ModalCompany = (props: IProps) => {
                 address: dataInit.address,
             })
             setDataLogo([{
-                name: dataInit.logo,      // publicId
-                url: dataInit.logoUrl,    // ảnh Cloudinary thật
+                name: dataInit.logo,
+                url: dataInit.logo,
                 uid: uuidv4(),
             }])
         }
@@ -70,7 +70,7 @@ const ModalCompany = (props: IProps) => {
 
         if (dataInit?.id) {
             //update
-            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].url || dataLogo[0].name);
+            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].name);
             if (res.data) {
                 message.success("Cập nhật company thành công");
                 handleReset();
@@ -83,7 +83,7 @@ const ModalCompany = (props: IProps) => {
             }
         } else {
             //create
-            const res = await callCreateCompany(name, address, value, dataLogo[0].url || dataLogo[0].name);
+            const res = await callCreateCompany(name, address, value, dataLogo[0].name);
             if (res.data) {
                 message.success("Thêm mới company thành công");
                 handleReset();
@@ -164,8 +164,8 @@ const ModalCompany = (props: IProps) => {
         if (res && res.data) {
             setDataLogo([
                 {
-                    name: res.data.publicId,   // lưu publicId vào DB
-                    url: res.data.fileUrl,     // dùng URL để hiển thị ảnh
+                    name: res.data.fileUrl,
+                    url: res.data.fileUrl,
                     uid: uuidv4()
                 }
             ]);
@@ -250,8 +250,8 @@ const ModalCompany = (props: IProps) => {
                                                 dataInit?.id ? [
                                                     {
                                                         uid: uuidv4(),
-                                                        name: dataInit.logo,     // publicId
-                                                        url: dataInit.logoUrl,   // phải là URL đầy đủ !!!
+                                                        name: dataInit.logo,
+                                                        url: dataInit.logo,
                                                         status: 'done'
                                                     }
                                                 ] : []

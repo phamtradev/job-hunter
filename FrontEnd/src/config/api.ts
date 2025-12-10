@@ -37,7 +37,7 @@ export const callUploadSingleFile = (file: any, folderType: string) => {
     bodyFormData.append('file', file);
     bodyFormData.append('folder', folderType);
 
-    return axios.post<IBackendRes<{ publicId: string; fileUrl: string }>>(
+    return axios.post<IBackendRes<{ fileUrl: string }>>(
         '/api/v1/files',
         bodyFormData,
         {

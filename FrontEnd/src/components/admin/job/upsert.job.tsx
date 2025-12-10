@@ -46,7 +46,7 @@ const ViewUpsertJob = (props: any) => {
                     setCompanies([
                         {
                             label: res.data.company?.name as string,
-                            value: `${res.data.company?.id}@#$${res.data.company?.logoUrl || res.data.company?.logo}` as string,
+                            value: `${res.data.company?.id}@#$${res.data.company?.logo}` as string,
                             key: res.data.company?.id
                         }
                     ])
@@ -63,7 +63,7 @@ const ViewUpsertJob = (props: any) => {
                         ...res.data,
                         company: {
                             label: res.data.company?.name as string,
-                            value: `${res.data.company?.id}@#$${res.data.company?.logoUrl || res.data.company?.logo}` as string,
+                            value: `${res.data.company?.id}@#$${res.data.company?.logo}` as string,
                             key: res.data.company?.id
                         },
                         skills: temp
