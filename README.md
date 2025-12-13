@@ -17,9 +17,9 @@ A comprehensive job hunting platform backend built with Spring Boot, providing R
 - **Spring Filter** - Advanced filtering and querying capabilities
 
 ### Frontend Stack
-- **React** - UI library
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS framework
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
 
 ### Devops Stack
 - **Docker**, **Docker Compose**
