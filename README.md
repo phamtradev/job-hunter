@@ -112,5 +112,4 @@ For Docker deployment, you can override:
 - `SPRING_DATASOURCE_URL`
 - `SPRING_DATASOURCE_USERNAME`
 - `SPRING_DATASOURCE_PASSWORD`
-- `PORT` (for cloud platforms like Render)
 
