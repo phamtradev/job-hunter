@@ -108,7 +108,7 @@ A comprehensive job hunting platform backend built with Spring Boot, providing R
 - API endpoint protection
 
 ### Environment Variables
-For Docker deployment, you can override:
+For Docker deployment, you can override
 - `SPRING_DATASOURCE_URL`
 - `SPRING_DATASOURCE_USERNAME`
 - `SPRING_DATASOURCE_PASSWORD`
