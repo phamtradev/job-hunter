@@ -107,7 +107,7 @@ A comprehensive job hunting platform backend built with Spring Boot, providing R
 - Secure cookie handling for refresh tokens
 - API endpoint protection
 
-### Environment Variables
+### Environment Variables:
 For Docker deployment, you can override:
 - `SPRING_DATASOURCE_URL`
 - `SPRING_DATASOURCE_USERNAME`
